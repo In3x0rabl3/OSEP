@@ -1,0 +1,7 @@
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\bin\x64\Debug\PsBypassCLM.exe.config
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\bin\x64\Debug\PsBypassCLM.exe
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\bin\x64\Debug\PsBypassCLM.pdb
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\bin\x64\Debug\System.Management.Automation.dll
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\obj\x64\Debug\PsBypassCLM.exe
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\obj\x64\Debug\PsBypassCLM.pdb
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\obj\x64\Debug\PsBypassCLM.csprojResolveAssemblyReference.cache

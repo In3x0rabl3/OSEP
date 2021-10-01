@@ -1,0 +1,6 @@
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\PsBy2.exe.config
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\PsBy2.exe
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\PsBy2.pdb
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\System.Management.Automation.dll
+C:\temp2\temp\SharpUp\PsBy2\obj\Debug\PsBy2.exe
+C:\temp2\temp\SharpUp\PsBy2\obj\Debug\PsBy2.pdb

@@ -1,0 +1,9 @@
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\PsBypassCLM.exe.config
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\PsBypassCLM.exe
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\PsBypassCLM.pdb
+C:\temp2\temp\SharpUp\PsBy2\bin\Debug\System.Management.Automation.dll
+C:\temp2\temp\SharpUp\PsBy2\obj\Debug\PsBypassCLM.exe
+C:\temp2\temp\SharpUp\PsBy2\obj\Debug\PsBypassCLM.pdb
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\bin\Debug\PsBypassCLM.exe.config
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\obj\Debug\PsBypassCLM.exe
+C:\temp2\temp\PSBypassCLM\PSBypassCLM\obj\Debug\PsBypassCLM.pdb
