@@ -1,0 +1,26 @@
+{
+    "FixedFileInfo": {
+        "FileVersion": {
+            "Major": 1,
+            "Minor": 0,
+            "Patch": 0,
+            "Build": 0
+        },
+        "ProductVersion": {
+            "Major": 1,
+            "Minor": 0,
+            "Patch": 0,
+            "Build": 0
+        }
+    },
+    "StringFileInfo": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "Microsoft Corporation",
+        "FileVersion": "Microsoft Corporation",
+        "InternalName": "test",
+        "LegalCopyright": "Microsoft Corporation",
+        "OriginalFilename": "Microsoft Corporation",
+        "ProductName": "Microsoft Corporation",
+        "ProductVersion": "Microsoft Corporation"
+    }
+}
