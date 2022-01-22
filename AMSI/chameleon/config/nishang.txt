@@ -1,8 +1,0 @@
-Write-Verbose[^\n\}\)\(\{\;]+
-Write-Output[^\n\}\)\(\{\;]+
-Write-Warning[^\n\}\)\(\{\;]+
-,\s*Mandatory\s*=\s*\$true
-,\s*Mandatory\s*=\s*\$false
-Mandatory\s*=\s*\$true,
-Mandatory\s*=\s*\$false,
-validatepattern
