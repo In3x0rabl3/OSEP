@@ -1,5 +1,7 @@
 # Steps
 
+>
+> https://github.com/NetSPI/PowerUpSQL
 > https://github.com/BloodHoundAD/BloodHound
 
 ```bash
