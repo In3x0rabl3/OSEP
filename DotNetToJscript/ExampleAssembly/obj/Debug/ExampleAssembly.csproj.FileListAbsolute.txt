@@ -1,0 +1,6 @@
+/Users/purg3/Documents/OSEP/DotNetToJScript-master/ExampleAssembly/obj/Debug/ExampleAssembly.csproj.AssemblyReference.cache
+/Users/purg3/Documents/OSEP/DotNetToJScript-master/ExampleAssembly/obj/Debug/ExampleAssembly.csproj.CoreCompileInputs.cache
+/Users/purg3/Documents/OSEP/DotNetToJScript-master/ExampleAssembly/bin/Debug/ExampleAssembly.dll
+/Users/purg3/Documents/OSEP/DotNetToJScript-master/ExampleAssembly/bin/Debug/ExampleAssembly.pdb
+/Users/purg3/Documents/OSEP/DotNetToJScript-master/ExampleAssembly/obj/Debug/ExampleAssembly.dll
+/Users/purg3/Documents/OSEP/DotNetToJScript-master/ExampleAssembly/obj/Debug/ExampleAssembly.pdb
