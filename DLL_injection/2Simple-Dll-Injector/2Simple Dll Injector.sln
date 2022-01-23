@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2Simple Dll Injector", "2Simple Dll Injector\2Simple Dll Injector.csproj", "{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Debug|x64.ActiveCfg = Debug|x64
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Debug|x64.Build.0 = Debug|x64
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Debug|x86.ActiveCfg = Debug|x86
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Debug|x86.Build.0 = Debug|x86
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Release|x64.ActiveCfg = Release|x64
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Release|x64.Build.0 = Release|x64
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Release|x86.ActiveCfg = Release|x86
+		{A9D2ACF6-E7A3-4EBC-8307-717A912D2B56}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {796E5A45-45E4-4A7E-8379-B1A94FBF1030}
+	EndGlobalSection
+EndGlobal
