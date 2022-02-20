@@ -8,7 +8,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 ***
 # DotNetToJscript
 
-## Replace testclass.cs with follow code
+## Replace testclass.cs with following code and replace shellcode
 
 ```csharp
 using System;
