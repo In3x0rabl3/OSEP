@@ -448,7 +448,9 @@ $method.Invoke(0, $null)
 # Windows
 
 ### Useful links
+
 [Windows Priv esc](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md#applocker-enumeration)
+
 [lolbas](https://lolbas-project.github.io/#)
 
 ```
