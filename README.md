@@ -343,6 +343,7 @@ var r = new ActiveXObject("WScript.Shell").Run("YOUR.exe");
 ## Macro
 
 - ### Obfuscate however you want
+- This macro is now detected as for the .bat and .txt they are still good to go as of 20FEB2022
 
 ```
 Sub rev()
