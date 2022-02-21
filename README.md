@@ -478,6 +478,14 @@ NetSh Advfirewall set allprofiles state off
 
 [Linux Priv esc](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md)
  
+ ### Full TTY:
+ 
+ ```
+ python -c 'import pty; pty.spawn("/bin/bash")'
+ ^Z
+ stty raw -echo && fg
+ reset
+ ```
  
  ### Sendmail:
  ```
