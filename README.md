@@ -30,7 +30,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Disable_AMSI](#Disable_AMSI)
 - [Load_assembly_reflectively](#Load_assembly_reflectively)
 
-## [Active_Directory](#Active_directory)
+## [Active_Directory](#Active_Directory)
 
 ## [Windows](#Windows)
 
