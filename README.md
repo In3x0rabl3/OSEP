@@ -9,8 +9,8 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 [CSharp](#CSharp)
 
-- [Meterpreter FUD DLL](#Meterpreter_FUD_DLL)
-## DLL Injection
+- [Meterpreter_FUD_DLL](##Meterpreter_FUD_DLL)
+- [DLL_Injection](##
 ## Shellcode Runner
 ## Process injection
 
