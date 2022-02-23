@@ -28,7 +28,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [CLM_Bypass](#CLM_Bypass)
 - [Disable_Restricted_Admin](#Disable_Restricted_Admin)
 - [Disable_AMSI](#Disable_AMSI)
-- [Load_assembly_reflectively](#Load_C#_assembly_reflectively)
+- [Load_assembly_reflectively](#Load_assembly_reflectively)
 
 
 ***
@@ -651,7 +651,7 @@ $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c
 <br>
 <br>
 
-## Load_C#_assembly_reflectively:
+## Load_assembly_reflectively:
 
 ## Download and run assembly without arguments
 ```powershell
