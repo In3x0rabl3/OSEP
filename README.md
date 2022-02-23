@@ -681,6 +681,18 @@ Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\payload.exe"
 ```
 <br>
 
+#### Open powershell as Administrator
+```
+Runs Admin - start-process powershell -verb runas
+```
+<br>
+
+#### Add Defender Exclusion area
+```
+Add-MpPreference -ExclusionPath C:\temp, C:\
+```
+
+<br>
 ### Remove definitions
 ```
 C:\Program Files\Windows Defender>.\MpCmdRun.exe -removedefinitions -all
@@ -984,6 +996,14 @@ set autoroute 'route 172.16.x.0/24';
 
 # Tools
 
+[SharpKatz](https://github.com/b4rtik/SharpKatz)
+
+[SharpLoader](https://github.com/S3cur3Th1sSh1t/Invoke-SharpLoader)
+
+[GhostPack](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries)
+
+[SharpSploitConsole](https://github.com/anthemtotheego/SharpSploitConsole)
+
 [SeatBelt](https://github.com/GhostPack/Seatbelt)
 
 [Winpwn](https://github.com/S3cur3Th1sSh1t/WinPwn)
@@ -1044,7 +1064,7 @@ set autoroute 'route 172.16.x.0/24';
 
 [Rubeus](https://github.com/GhostPack/Rubeus)
 
-[MimiKatz](https://gist.github.com/insi2304/484a4e92941b437bad961fcacda82d49)
+[MimiKatz](https://github.com/ParrotSec/mimikatz)
 
 [Powermad](https://github.com/Kevin-Robertson/Powermad)
 
