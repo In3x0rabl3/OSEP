@@ -5,9 +5,9 @@ Under Construction
 A cheatsheet compiled so you have everything you need in one place. I'd like to say thank you to all the authors of the repo's listed here, without you this would not exist.
 # Table of Contents
 
-## [DotnetToJScript](#DotNetToJscript)
+## [DotnetToJScript](#DotNetToJscript-1)
 
-## [CSharp](#CSharp)
+## [CSharp](#CSharp-1)
 
 - [Meterpreter_FUD_DLL](#Meterpreter_FUD_DLL)
 - [DLL_Injection](#DLL_Injection)
@@ -18,9 +18,9 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 - [Download&Execute](##Download&Execute)
 
-## [Phishing](#Phishing)
+## [Phishing](#Phishing-1)
 
-## [Powershell](#Powershell)
+## [Powershell](#Powershell-1)
 
 - [Download_file](#Download_file)
 - [Powershell_Cradle](#Powershell_Cradle)
@@ -30,7 +30,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Disable_AMSI](#Disable_AMSI)
 - [Load_assembly_reflectively](#Load_assembly_reflectively)
 
-## [Active_Directory](#Active_Directory)
+## [Active_Directory](#Active_Directory-1)
 
 ## [Windows](#Windows-1)
 
@@ -42,13 +42,13 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 ## [PowerUpSQL](#PowerUpSQL-1)
 
-## [MimiKatz](#MimiKatz)
+## [MimiKatz](#MimiKatz-1)
 
-## [Rubeus](#Rubeus)
+## [Rubeus](#Rubeus-1)
 
-## [Metasploit](#Metasploit)
+## [Metasploit](#Metasploit-1)
 
-## [Tools](#Tools)
+## [Tools](#Tools-1)
 
 ***
 # DotNetToJscript
