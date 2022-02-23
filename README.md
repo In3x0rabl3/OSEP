@@ -3,7 +3,8 @@
 Under Construction
 ***
 A cheatsheet compiled so you have everything you need in one place. I'd like to say thank you to all the authors of the repo's listed here, without you this would not exist.
-
+# Table of Contents
+[Csharp](#CSharp)
 
 ***
 # DotNetToJscript
