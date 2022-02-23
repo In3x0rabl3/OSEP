@@ -728,7 +728,7 @@ Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\payload.exe"
 
 #### Open powershell as Administrator
 ```
-Runs Admin - start-process powershell -verb runas
+start-process powershell -verb runas
 ```
 <br>
 
