@@ -9,7 +9,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 [CSharp](#CSharp)
 
-- [Meterpreter FUD DLL](#Meterpreter FUD DLL)
+- [Meterpreter FUD DLL](#Meterpreter_FUD_DLL)
 ## DLL Injection
 ## Shellcode Runner
 ## Process injection
@@ -103,7 +103,7 @@ self.close();
 # CSharp
 
 
-# Meterpreter FUD DLL
+## Meterpreter_FUD_DLL
 
 ### Create msfvenom shellcode
 
