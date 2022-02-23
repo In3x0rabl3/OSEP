@@ -6,7 +6,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 # Table of Contents
 
 [DotnetToJScript](#DotNetToJscript)
-[CSharp]
+[CSharp](#CSharp)
 - [Meterpreter FUD DLL](##Meterpreter FUD DLL)
 ## DLL Injection
 ## Shellcode Runner
