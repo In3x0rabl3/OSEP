@@ -23,6 +23,12 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 ## [Powershell](#Powershell)
 
 - [Download_file](#Download_file)
+- [Powershell_Cradle](#Powershell_Cradle)
+- [Constrained_lang_mode](#Constrained_lang_mode)
+- [CLM_Bypass](#CLM_Bypass)
+- [Disable_Restricted_Admin](#Disable_Restricted_Admin)
+- [Disable_AMSI](#Disable_AMSI)
+- [Load_C#_assembly_reflectively](#Load_C#_assembly_reflectively)
 
 
 ***
