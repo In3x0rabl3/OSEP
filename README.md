@@ -30,6 +30,25 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Disable_AMSI](#Disable_AMSI)
 - [Load_assembly_reflectively](#Load_assembly_reflectively)
 
+## [Active_Directory](#Active_directory)
+
+## [Windows](#Windows)
+
+## [Linux](#Linux)
+
+## [Impacket](#Impacket)
+
+## [TortugaToolKit](#TortugaToolKit)
+
+## [PowerUpSQL](#PowerUpSQL)
+
+## [MimiKatz](#MimiKatz)
+
+## [Rubeus](#Rubeus)
+
+## [Metasploit](#Metasploit)
+
+## [Tools](#Tools)
 
 ***
 # DotNetToJscript
