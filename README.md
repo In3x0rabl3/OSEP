@@ -22,7 +22,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 ## [Powershell](#Powershell)
 
-- [Download_file](#Download_file:)
+- [Download_file](#Download_file)
 
 
 ***
