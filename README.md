@@ -14,6 +14,10 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Shellcode_Runner](##Shellcode_Runner)
 - [Process_injection](##Process_injection)
 
+[Javascript](#Javascript)
+
+- [Download&Execute](##Download&Execute)
+
 ***
 # DotNetToJscript
 
