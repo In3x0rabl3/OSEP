@@ -32,15 +32,15 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 ## [Active_Directory](#Active_Directory)
 
-## [Windows](#Windows)
+## [Windows](#Windows-1)
 
-## [Linux](#Linux)
+## [Linux](#Linux-1)
 
-## [Impacket](#Impacket)
+## [Impacket](#Impacket-1)
 
-## [TortugaToolKit](#TortugaToolKit)
+## [TortugaToolKit](#TortugaToolKit-1)
 
-## [PowerUpSQL](#PowerUpSQL)
+## [PowerUpSQL](#PowerUpSQL-1)
 
 ## [MimiKatz](#MimiKatz)
 
