@@ -22,7 +22,7 @@ Enjoy creating your own 🦠
 
 # [CSharp](#CSharp-1)
 
-- [FUD_.NET](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#fud_net)
+- [FUD_.NET](#FUD_.NET)
 - [Meterpreter_FUD_DLL](#Meterpreter_FUD_DLL)
 - [DLL_Injection](#DLL_Injection)
 - [Shellcode_Runner](#Shellcode_Runner)
@@ -36,8 +36,8 @@ Enjoy creating your own 🦠
 <br>
 
 # [Phishing](#Phishing-1)
--[XOR_VBA](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#xor_vba)
-
+- [XOR_VBA](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#xor_vba)
+- [VBA_Runner](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#vba_runner)
 
 <br>
 
