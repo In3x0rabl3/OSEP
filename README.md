@@ -36,6 +36,7 @@ Enjoy creating your own 🦠
 <br>
 
 # [Phishing](#Phishing-1)
+-[XOR_VBA](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#xor_vba)
 
 
 <br>
