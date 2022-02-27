@@ -9,6 +9,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 ## [CSharp](#CSharp-1)
 
+- [FUD_.NET](FUD_.NET)
 - [Meterpreter_FUD_DLL](#Meterpreter_FUD_DLL)
 - [DLL_Injection](#DLL_Injection)
 - [Shellcode_Runner](#Shellcode_Runner)
@@ -83,16 +84,14 @@ public TestClass()
 IntPtr.Zero);
 ```
 <br>
-<br>
 
-## Build
+## **Build JS**
 ```
 DotNetToJScript.exe ExampleAssembly.dll --lang=Jscript --ver=v4 -o runner.js
 ```
 <br>
-<br>
 
-## Create HTA file
+## **Create HTA file**
 
 #### Method 1:
 ```javascript
@@ -119,7 +118,7 @@ self.close();
 <br>
 <br>
 
-## **FUD .NET**
+## **FUD_.NET**
 ***
 <br>
 
