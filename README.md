@@ -15,9 +15,9 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Process_injection](#Process_injection)
 - [SharpLoader](#SharpLoader)
 
-## [Javascript](#Javascript)
+## [Javascript](#Javascript-1)
 
-- [Download&Execute](##Download&Execute)
+- [Download&Execute](##Download&Execute-1)
 
 ## [Phishing](#Phishing-1)
 
