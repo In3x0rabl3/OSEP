@@ -39,6 +39,7 @@ Enjoy creating your own 🦠
 # [Phishing](#Phishing-1)
 - [XOR_VBA](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#xor_vba)
 - [VBA_Runner](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#vba_runner)
+- [Purge](#Purge)
 
 <br>
 
@@ -846,10 +847,10 @@ End Sub
 ```
 <br>
 
-# Purge your .doc or .docm
+## Purge
 
 - Download the repo below and build with visual studio.
-- Purge the word doc you just created with the code above.
+- Purge the word doc/docm you just created with the code above.
 - As of 27/02/2022 18:10 this FUD 
 
 - [BadAssMacros](https://github.com/Inf0secRabbit/BadAssMacros)
