@@ -140,10 +140,8 @@ self.close();
 # CSharp
 
 <br>
-<br>
 
 ## **FUD_.NET**
-***
 <br>
 
  #### 1. Generate shellcode
