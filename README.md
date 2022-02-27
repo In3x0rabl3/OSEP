@@ -76,7 +76,7 @@ Enjoy creating your own 🦠
 # DotNetToJscript
 <br>
 
-## Testclass.cs
+## Testclass
 
 - Replace testclass.cs with following code and replace shellcode
 
