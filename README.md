@@ -9,7 +9,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 ## [CSharp](#CSharp-1)
 
-- [FUD_.NET](FUD_.NET)
+- [FUD_.NET](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#fud_net)
 - [Meterpreter_FUD_DLL](#Meterpreter_FUD_DLL)
 - [DLL_Injection](#DLL_Injection)
 - [Shellcode_Runner](#Shellcode_Runner)
