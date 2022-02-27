@@ -15,7 +15,7 @@ Enjoy creating your own 🦠
 <br>
 
 # [DotnetToJScript](#DotNetToJscript-1)
-- [Testclass](#testclass.cs)
+- [Testclass](#testclass)
 - [Build Javascript](#Build_JS)
 - [Create_HTA](#Create_HTA_file)
 <br>
