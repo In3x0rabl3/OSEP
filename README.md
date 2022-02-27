@@ -17,7 +17,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 
 ## [Javascript](#Javascript-1)
 
-- [Download&Execute](#Download&Execute)
+- [Download&Execute](#DownloadExecute-1)
 
 ## [Phishing](#Phishing-1)
 
