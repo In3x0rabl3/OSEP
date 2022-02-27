@@ -600,6 +600,9 @@ var r = new ActiveXObject("WScript.Shell").Run("YOUR.exe");
 
 # Phishing
 
+Reference:
+	- [Office](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Office%20-%20Attacks.md#docm---macro-creator)
+
 ## Macro
 
 - ### Obfuscate however you want
