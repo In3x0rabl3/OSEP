@@ -116,7 +116,12 @@ self.close();
 
 # CSharp
 
-## FUD .NET
+<br>
+<br>
+
+## **FUD .NET**
+***
+<br>
 
  #### 1. Generate shellcode
  #### 2. XOR Shellcode
@@ -125,6 +130,10 @@ self.close();
  
  - Modify however you want, keep'em guessing ; )
 
+<br>
+
+### **XOR**
+***
 ```
 using System;
 using System.Collections.Generic;
@@ -196,7 +205,11 @@ static void Main(string[] args)
     }
 }
 ```
+
 <br>
+
+### **Runner**
+***
 
 ```
 using System;
