@@ -23,7 +23,7 @@ Enjoy creating your own 🦠
 
 # [CSharp](#CSharp-1)
 
-- [FUD_.NET](#FUD_.NET)
+- [FUD_.NET](#FUD_NET)
 - [Meterpreter_FUD_DLL](#Meterpreter_FUD_DLL)
 - [DLL_Injection](#DLL_Injection)
 - [Shellcode_Runner](#Shellcode_Runner)
@@ -142,7 +142,7 @@ self.close();
 
 <br>
 
-## **FUD_.NET**
+## FUD_NET
 <br>
 
  #### 1. Generate shellcode
