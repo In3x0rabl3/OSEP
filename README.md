@@ -55,6 +55,8 @@ Enjoy creating your own 🦠
 - [Load_assembly_reflectively](#Load_assembly_reflectively)
 <br>
 
+# [Lateral_Movement](#Lateral_Movement)
+
 # [Active_Directory](#Active_Directory-1)
 
 # [Windows](#Windows-1)
@@ -1035,6 +1037,30 @@ $method = $class.GetMethod("runner")
 $method.Invoke(0, $null)
 ```
 <br>
+
+# Lateral_Movement
+<br>
+
+## SSH
+
+### Local Port Forwarding:
+```bash
+ssh user@KillaOcean -L 127.0.0.1:5577:127.0.0.1:5577
+```
+<br>
+
+### Remote Port Forwarding:
+
+```bash
+ssh user@KillaOcean -R 127.0.0.1:5577:127.0.0.1:22
+```
+<br>
+
+### Dynamic Port Forwarding:
+```bash
+ssh -NfD 1080 user@KillaOcean
+proxychains4 nmap 192.168.1.0/24
+```
 <br>
 
 # Active_Directory
