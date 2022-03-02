@@ -1046,6 +1046,15 @@ ssh user@KillaOcean -R 127.0.0.1:5577:127.0.0.1:22
 ```
 <br>
 
+
+
+### Dynamic Port Forwarding:
+```bash
+ssh -NfD 1080 user@KillaOcean
+proxychains4 nmap 192.168.1.0/24
+```
+<br>
+
 ### autorun
 
 ```
@@ -1054,13 +1063,6 @@ set session x
 run
 
 auxiliary/server/socks_proxy
-```
-<br>
-
-### Dynamic Port Forwarding:
-```bash
-ssh -NfD 1080 user@KillaOcean
-proxychains4 nmap 192.168.1.0/24
 ```
 <br>
 
