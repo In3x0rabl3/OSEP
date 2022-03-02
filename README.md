@@ -57,6 +57,7 @@ Enjoy creating your own 🦠
 
 # [Lateral_Movement](#lateral_movement-1)
 - [SSH](#ssh)
+- [Autorun](#autorun)
 
 <br>
 
