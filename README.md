@@ -860,7 +860,7 @@ End Sub
 
 - Download the repo below and build with visual studio.
 - Purge the word doc/docm you just created with the code above.
-- As of 27/02/2022 18:10 this FUD 
+- As of 27/02/2022 18:10 this is undetectable by defender.
 
 - [BadAssMacros](https://github.com/Inf0secRabbit/BadAssMacros)
 <br>
