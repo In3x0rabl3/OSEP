@@ -60,6 +60,7 @@ Enjoy creating your own 🦠
 - [Autorun](#autorun)
 - [Chisel](#Chisel)
 - [BloodHound](#BloodHound)
+- [Pivoting](#Pivoting)
 
 <br>
 
@@ -1075,6 +1076,12 @@ auxiliary/server/socks_proxy
 ```
 <br>
 
+### Pivoting
+
+- [Pivoting[(https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Network%20Pivoting%20Techniques.md)
+
+<br>
+
 ## Chisel
 
 ### Port Forwarding
@@ -1165,8 +1172,11 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 # Linux
 
- 
- ### Full TTY
+### Linux_Privilege_Escalation
+
+- [Linux_Privilege_Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md)
+
+### Full TTY
  
  ```
  python -c 'import pty; pty.spawn("/bin/bash")'
