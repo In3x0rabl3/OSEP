@@ -1078,7 +1078,7 @@ auxiliary/server/socks_proxy
 
 ### Pivoting
 
-- [Pivoting[(https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Network%20Pivoting%20Techniques.md)
+- [Pivoting](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Network%20Pivoting%20Techniques.md)
 
 <br>
 
