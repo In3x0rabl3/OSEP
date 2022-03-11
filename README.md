@@ -1153,9 +1153,15 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 - [Windows_Privilege_Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
 
+### Windows_Download_Execute
+
 - [Windows_Download_Execute](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Download%20and%20Execute.md)
 
+### Windows_With_Creds
+
 - [Windows_With_Creds](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Using%20credentials.md)
+
+<br>
 
 # Linux
 
