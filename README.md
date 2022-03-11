@@ -65,7 +65,7 @@ Enjoy creating your own 🦠
 
 # [Windows](#Windows-1)
 - [Mimikatz](#Mimikatz)
-- [Windows_Priviege_Escalation](#Windows_Priviege_Escalation)
+- [Windows_Privilege_Escalation](#windows_privilege_escalation)
 
 
 <br>
@@ -1149,7 +1149,7 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 ### Windows_Privilege_Escalation
 
-- [Windows_Priviege_Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
+- [Windows_Privilege_Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
 
 # Linux
 
