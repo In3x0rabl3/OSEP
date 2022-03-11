@@ -81,8 +81,6 @@ Enjoy creating your own 🦠
 
 # [PowerUpSQL](#PowerUpSQL-1)
 
-# [MimiKatz](#MimiKatz-1)
-
 # [Rubeus](#Rubeus-1)
 
 # [Metasploit](#Metasploit-1)
