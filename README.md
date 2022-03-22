@@ -977,6 +977,9 @@ $ExecutionContext.SessionState.LanguageMode
 <br>
 
 ### CLM_Bypass
+
+- [CLM-BYPASS](https://github.com/calebstewart/bypass-clm)
+
 ```powershell
 Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
 ```
