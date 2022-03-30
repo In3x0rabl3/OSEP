@@ -1157,6 +1157,16 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 # Windows
 
+
+### Alternate_Data_Stream_Execution
+
+```powershell
+1. Identify file that is both writeable and executable by your user using icacls.exe
+2. Type test.js > “C:\windows\somefile.log:test.js”
+3. Verify - dir /r “C:\windows\somefile.log”
+4. wscript “C:\windows\somefile.log:test.js”
+```
+
 ### Mimikatz
 
 - [Mimikatz](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Mimikatz.md)
