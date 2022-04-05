@@ -64,7 +64,7 @@ Enjoy creating your own 🦠
 
 <br>
 
-# [Windows](#Windows-1)
+# [Windows](#Windows)
 - [Mimikatz](#Mimikatz)
 - [Windows_Privilege_Escalation](#windows_privilege_escalation)
 - [Windows_Download_Execute](#Windows_Download_Execute)
@@ -80,7 +80,7 @@ Enjoy creating your own 🦠
 
 # [Active_Directory](#Active_Directory-1)
 
-# [Windows](#Windows-1)
+# [Windows](#Windows)
 
 # [Linux](#Linux-1)
 
