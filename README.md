@@ -65,6 +65,7 @@ Enjoy creating your own 🦠
 <br>
 
 # [Windows](#Windows-1)
+- [Paths](#check-writable-paths-under-cwindows)
 - [Mimikatz](#Mimikatz)
 - [Windows_Privilege_Escalation](#windows_privilege_escalation)
 - [Windows_Download_Execute](#Windows_Download_Execute)
