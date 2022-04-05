@@ -66,6 +66,7 @@ Enjoy creating your own 🦠
 
 # [Windows](#Windows-1)
 - [Paths](#check-writable-paths-under-cwindows)
+- [Data Stream Execution](#alternate_data_stream_execution)
 - [Mimikatz](#Mimikatz)
 - [Windows_Privilege_Escalation](#windows_privilege_escalation)
 - [Windows_Download_Execute](#Windows_Download_Execute)
