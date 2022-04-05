@@ -184,7 +184,7 @@ self.close();
 
 ### **XOR**
 ***
-```
+```csharp
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -261,7 +261,7 @@ static void Main(string[] args)
 ### **Runner**
 ***
 
-```
+```csharp
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
