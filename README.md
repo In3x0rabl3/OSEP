@@ -1157,6 +1157,11 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 # Windows
 
+### Check writable paths under C:\Windows
+```powershell
+accesschk.exe "currentuser" C:\Windows -wus
+```
+
 
 ### Alternate_Data_Stream_Execution
 
