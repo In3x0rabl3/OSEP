@@ -80,8 +80,6 @@ Enjoy creating your own 🦠
 
 # [Active_Directory](#Active_Directory-1)
 
-# [Windows](#Windows)
-
 # [Linux](#Linux-1)
 
 # [Impacket](#Impacket-1)
