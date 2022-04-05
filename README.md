@@ -140,6 +140,7 @@ DotNetToJScript.exe ExampleAssembly.dll --lang=Jscript --ver=v4 -o runner.js
 
 #### Method 1:
 ```javascript
+<html>
 <head>
 <script language="JScript">
 var shell = new ActiveXObject("WScript.Shell");
