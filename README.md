@@ -1325,14 +1325,6 @@ Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
 ```
 <br>
 
-### Disable_Restricted_Admin:
-
-```powershell
-Remove-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Lsa" -Name
-DisableRestrictedAdmin
-```
-<br>
-
 
 ## Disable_AMSI
  
