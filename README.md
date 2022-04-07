@@ -1,4 +1,5 @@
 # **OSEP Cheatsheet**
+
 <br>
 
 #### Compiled by: **purg3**
@@ -9,31 +10,35 @@ I hope this helps you on your journey to passing the OSEP. I have pulled togethe
 Thanks for visiting !
 
 Enjoy creating your own 🦠
+
 <br>
 
 # Table of Contents
-<br>'
+<br>
 
 # [DotnetToJScript](#DotNetToJscript-1)
 - [Testclass](#testclass)
 - [Build Javascript](#Build_JS)
 - [Create_HTA](#Create_HTA_file)
 - See Phishing for sending your hta file.
+
 <br>
 
 # [CSharp](#CSharp-1)
 
-- [_.NET](#_.NET)
+- [.NET](#_net)
 - [Meterpreter_DLL](#Meterpreter_DLL)
 - [DLL_Injection](#DLL_Injection)
-- [Shellcode_Runner](#Shellcode_Runner)
+- [Vanilla_Runner](#Shellcode_Runner)
 - [Process_injection](#Process_injection)
 - [SharpLoader](#SharpLoader)
+
 <br>
 
 # [Javascript](#Javascript-1)
 
 - [Download&Execute](#DownloadExecute)
+
 <br>
 
 # [Phishing](#Phishing-1)
