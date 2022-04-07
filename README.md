@@ -51,6 +51,9 @@ Enjoy creating your own 🦠
 
 # [Powershell](#Powershell-1)
 
+- [Revshell](#reverse-shell)
+- [Obfuscated_RevShell](#obfuscated_revshell)
+- [Powershell_Meterpreter](#powershell_meterpreter)
 - [Download_file](#Download_file)
 - [Powershell_Cradle](#Powershell_Cradle)
 - [Constrained_lang_mode](#Constrained_lang_mode)
