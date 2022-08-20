@@ -5,11 +5,12 @@
 #### Compiled by: **purg3**
 *Under Construction**
 ***
-I hope this helps you on your journey to passing the OSEP. I have pulled together many repo's related to this course. When you do eventually reach the tools list please show some love to the authors. Some of the C#, VBA code is my own and feel free to take and modify how you want. **PLEASE DONT UPLOAD TO VIRUSTOTAL AND IF YOU MUST USE WINDOWS ISOLATE IT FROM THE NET, PERFORM AV TESTING, WIPE, FRESH INSTALL, REPEAT**. If you want to update your AV do so manually. 
 
-Thanks for visiting !
+I hope this helps you on your journey to passing the OSEP. I have pulled together many repo's related to this course. When you do eventually reach the tools list please show some love to the authors.
 
-Enjoy creating your own 🦠
+**PLEASE DONT UPLOAD TO VIRUSTOTAL AND WHEN TESTING ON WINDOWS ISOLATE IT FROM THE NET, PERFORM AV TESTING, WIPE, FRESH INSTALL, REPEAT**. If you want to update your AV do so manually.
+
+Enjoy.
 
 <br>
 
