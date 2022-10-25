@@ -20,7 +20,7 @@ Enjoy.
 - [MSSQL](#mssql)
 - [TTY](#tty)
 - [Powershell](#powershell)
-        - [Check 64bit Shell](#check-64bit-shell)
+   - [Check 64bit Shell](#check-64bit-shell)
         - [Change Passwd](#change-passwd)
         - [Add User](#add-user)
         - [Execute Cradle](#execute-cradle)
