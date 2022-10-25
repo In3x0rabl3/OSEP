@@ -13,6 +13,9 @@
 - [ ] Phishing
 
 **MSSQL:**
+ - [ ] Linked Servers
+ - [ ] Priv Esc
+ - [ ] Enable Shell
 
 **Privilege Escalation:**
 
