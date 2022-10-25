@@ -16,8 +16,7 @@ Enjoy.
 
 
 
-- [**OSEP Reference**](#osep-reference)
-      - [Compiled by: **purg3**](#compiled-by-purg3)
+
 - [MSSQL](#mssql)
 - [TTY](#tty)
 - [Powershell](#powershell)
