@@ -106,7 +106,7 @@ python -c 'import pty;pty.spawn("/bin/bash")
 
 # Powershell
 
-##### Check 64bit Shell
+#### Check 64bit Shell
 
 ```powershell
 [Environment]::Is64BitOperatingSystem
