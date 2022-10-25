@@ -1,5 +1,11 @@
 # OSEP 
 
+# Summary
+
+This repository will refresh your memory when taking the OSEP exam. 
+Thank you, to everyone who's code was used in this repository.
+
+
 # Table of Contents
 
 - [OSEP_Reference](https://github.com/In3x0rabl3/OSEP/blob/main/osep_reference.md)
@@ -10,4 +16,3 @@
 - [OSEP_MSSQL](https://github.com/In3x0rabl3/OSEP/tree/main/MSSQL)
 
 
-- 
