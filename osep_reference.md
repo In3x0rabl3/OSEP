@@ -34,8 +34,7 @@ Enjoy.
         - [Sharploader](#sharploader)
         - [Load Assembly](#load-assembly)
         - [Covert & Change passwd](#covert--change-passwd)
-- [
-](#antivirus)
+- [Antivirus](#antivirus)
     - [AMSI](#amsi)
         - [CLM](#clm)
         - [Java](#java)
