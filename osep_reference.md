@@ -329,6 +329,11 @@ ssh -NfD 1080 user@KillaOcean
 
 Sock Proxy
 proxychains4 nmap 192.168.1.0/24
+
+Login Domain via ssh
+proxychains ssh -i tommypriv final\\tommy@172.16.222.184
+
+
 ```
 
 ##### Metasploit
