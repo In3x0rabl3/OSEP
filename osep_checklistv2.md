@@ -17,6 +17,8 @@
  - [ ] Linked Servers
  - [ ] Priv Esc
  - [ ] Enable Shell
+ - [ ] Code Exec
+ - [ ] Relay netv2 hash
 
 **Privilege Escalation:**
 
