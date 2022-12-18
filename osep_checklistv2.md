@@ -11,6 +11,7 @@
 - [ ] BruteForce
 - [ ] CVE
 - [ ] Phishing
+- [ ] Code Exec
 
 **MSSQL:**
  - [ ] Linked Servers
