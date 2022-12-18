@@ -22,26 +22,29 @@
 
 **Privilege Escalation:**
 
+- **Windows**
+- 
 - [ ] PowerUP
-- [ ] Config Files
-- [ ] PrintSpoofer
-- [ ] Web Service
+- [ ] LinPeas
+- [ ] Creds in Config Files
+- [ ] SEimpersonation (PrintSpoofer,Spooler,etc)
+- [ ] ShadowCopy
+- [ ] Hivenightmare
 - [ ] Mimikatz
 - [ ] UAC
 - [ ] MSSQL
-- [ ] Applocker
-- [ ] Token Impersonation
-- [ ] AMSI / CLM
-- [ ] Trusted Folders
-- [ ] Alternate Data Stream
-- [ ] Shared Library (Unix)
-- [ ] Disable Defender
+- [ ] Listening Services
+- [ ] Kernel
+
+- **Linux**
+
+- [ ] Shared Library
+- [ ] Sudo
+- [ ] Groups
 - [ ] Listening Services
 - [ ] Ansible (Unix)
-- [ ] SSH
-- [ ] LSE / LINPEAS / WINPEAS
+- [ ] lse / Linpeas
 - [ ] JFROG
-- [ ] LD_PRELOAD
 
 **Lateral Movement:**
 
@@ -55,7 +58,7 @@
 - [ ] Crack the Hash
 - [ ] RDP / SharpRDP
 - [ ] Web Application
-- [ ] Fileless
+- [ ] Fileless Lateral Movement
 - [ ] Mimikatz
 - [ ] Proxychains / Autoroute / SSH (Port Fowarding)
 - [ ] Bloodhound
