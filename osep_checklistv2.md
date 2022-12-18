@@ -23,7 +23,8 @@
 **Privilege Escalation:**
 
 - **Windows**
-- 
+
+
 - [ ] PowerUP
 - [ ] LinPeas
 - [ ] Creds in Config Files
@@ -37,6 +38,7 @@
 - [ ] Kernel
 
 - **Linux**
+
 
 - [ ] Shared Library
 - [ ] Sudo
