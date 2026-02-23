@@ -2,8 +2,8 @@ MATCH (s:Group)
 WHERE s.name IN ['ADMINS', 'TRUST ADMINS']
 MATCH (t)
 WHERE t <> s
-OPTIONAL MATCH adminPath=(t)-[:MemberOf*0..]->(s)
-WITH t, s
+OPTIONAL MATCH adminPath=(t)-[:MemberOf*1..]->(s)
+WITH t, s, adminPath
 WHERE adminPath IS NULL
 MATCH p=shortestPath((t)-[*1..]->(s))
 RETURN p
