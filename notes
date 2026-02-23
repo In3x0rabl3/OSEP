@@ -1,0 +1,10 @@
+MATCH (s:Group)
+WHERE s.name IN ['ADMINS', 'TRUST ADMINS']
+MATCH (t)
+WHERE t <> s
+OPTIONAL MATCH adminPath=(t)-[:MemberOf*0..]->(s)
+WITH t, s
+WHERE adminPath IS NULL
+MATCH p=shortestPath((t)-[*1..]->(s))
+RETURN p
+LIMIT 1000
