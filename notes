@@ -1,4 +1,4 @@
-MATCH (u:User {name: 'p@REALM'})
-MATCH p=(u)-[*1..6]->(n)
-RETURN p
-LIMIT 1000
+MATCH (u:User)
+WHERE u.name CONTAINS 'pent'
+RETURN u
+LIMIT 25
