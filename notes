@@ -1,5 +1,4 @@
-MATCH p=shortestPath((u:User)-[*1..]->(g:Group))
-WHERE g.name IN ['ADMINS', 'TRUST ADMINS']
-  AND ANY(r IN relationships(p) WHERE type(r) <> 'MemberOf')
+MATCH (u:User {name: 'p@REALM'})
+MATCH p=(u)-[*1..6]->(n)
 RETURN p
 LIMIT 1000
