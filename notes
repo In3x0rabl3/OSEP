@@ -1,4 +1,5 @@
-MATCH (u:User)
-WHERE u.name CONTAINS 'pent'
-RETURN u
-LIMIT 25
+MATCH p=(u:User)-[r]->(c:Computer)
+WHERE u.name = 'pentest_b@REALM'
+  AND (type(r) = 'HBAC_sshd' OR type(r) = 'HBAC_all')
+RETURN p
+LIMIT 1000
