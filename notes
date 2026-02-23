@@ -1,5 +1,6 @@
-MATCH p=shortestPath((t)-[*1..]->(s:Group))
-WHERE s.name IN ['ADMINS', 'TRUST ADMINS']
-  AND s <> t
-RETURN p
-LIMIT 1000
+MATCH (u:User)-[:MemberOf*0..]->(g:Group)
+MATCH (g)-[h]->(c:Computer)
+MATCH (g)-[s]->(c)
+WHERE type(h) STARTS WITH 'HBAC_' AND type(s) STARTS WITH 'Sudoer_'
+RETURN DISTINCT u.name AS user, c.name AS host, type(h) AS hbac_edge, type(s) AS sudo_edge
+LIMIT 500;
