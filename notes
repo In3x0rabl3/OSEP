@@ -1,5 +1,5 @@
-MATCH p=(g:Group)-[r]->(c:Computer)
-WHERE c.name = 'directory-olympus.okc1.cerebrascloud.com'
-  AND (type(r) = 'HBAC_sshd' OR type(r) = 'HBAC_all')
+MATCH p=(x)-[*1..6]->(c:Computer)
+WHERE c.name = 'DIRECTORY-OLYMPUS.OKC1.CEREBRASCLOUD.COM'
+  AND x <> c
 RETURN p
 LIMIT 1000
