@@ -1,8 +1,4 @@
-MATCH (g:Group)
-WHERE g.name IN ['ADMINS', 'TRUST ADMINS']
-MATCH (au:User)-[:MemberOf*1..]->(g)
-WITH g, collect(DISTINCT au) AS adminUsers
-MATCH p=shortestPath((u:User)-[*1..]->(g))
-WHERE NOT u IN adminUsers
+MATCH p=shortestPath((u:User)-[:MemberOf*2..]->(g:Group))
+WHERE g.name = 'ADMINS' OR g.name = 'TRUST ADMINS'
 RETURN p
 LIMIT 1000
