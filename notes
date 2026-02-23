@@ -1,4 +1,4 @@
-MATCH p=(u:User)-[r]->(c:Computer)
+MATCH p=(u:User)-[:MemberOf*1..]->(g:Group)-[r]->(c:Computer)
 WHERE u.name = 'pentest_b@REALM'
   AND (type(r) = 'HBAC_sshd' OR type(r) = 'HBAC_all')
 RETURN p
