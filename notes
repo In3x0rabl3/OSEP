@@ -1,7 +1,5 @@
-MATCH (s:Group)
+MATCH p=shortestPath((t)-[*1..]->(s:Group))
 WHERE s.name IN ['ADMINS', 'TRUST ADMINS']
-MATCH p=shortestPath((t)-[*1..]->(s))
-WHERE t <> s
-  AND (NOT t:Group OR NOT t.name IN ['ADMINS', 'TRUST ADMINS'])
+  AND s <> t
 RETURN p
 LIMIT 1000
