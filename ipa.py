@@ -6,33 +6,36 @@ import sys
 
 IPA_ENDPOINT = "/ipa/session/json"
 COOKIE = None
-DEBUG = True  # Toggle debug output
+DEBUG = True
+
+# GLOBAL LOOKUP TABLES
+GLOBAL_USERS = []
+GLOBAL_HOSTS = []
 
 def debug(msg):
     if DEBUG:
         print(f"[DEBUG] {msg}")
 
 ###############################################################################
-# RPC CALLER
+# RPC HELPER
 ###############################################################################
 
 def request(host, method, params=None):
-    """Perform JSON-RPC request to FreeIPA."""
     global COOKIE
     headers = {
         "Content-Type": "application/json",
-        "Referer": f"https://{host}/ipa"
+        "Referer": f"https://{host}/ipa",
     }
     if COOKIE:
         headers["Cookie"] = COOKIE
 
     payload = json.dumps({
         "method": method,
-        "params": params or [[], {"all": True}]
+        "params": params or [[], {"all": True}],
     })
 
     ctx = ssl._create_unverified_context()
-    debug(f"--> RPC CALL: {method}")
+    debug(f"--> RPC {method}")
 
     try:
         conn = http.client.HTTPSConnection(host, context=ctx)
@@ -45,15 +48,13 @@ def request(host, method, params=None):
     set_cookie = resp.getheader("Set-Cookie")
     if set_cookie:
         COOKIE = set_cookie.split(";", 1)[0]
-        debug(f"Updated cookie: {COOKIE}")
+        debug(f"[COOKIE] {COOKIE}")
 
     raw = resp.read().decode()
     conn.close()
 
     try:
-        parsed = json.loads(raw)
-        debug(f"<-- RESULT {method}: keys={list(parsed.keys())}")
-        return parsed
+        return json.loads(raw)
     except:
         debug(f"[INVALID JSON] {raw[:200]}")
         return {"error": "invalid_json", "raw": raw}
@@ -64,16 +65,14 @@ def request(host, method, params=None):
 ###############################################################################
 
 def login(host, user, password):
-    """Authenticate with FreeIPA UI backend."""
     global COOKIE
-    debug("Authenticating...")
+    debug("Logging in...")
 
     ctx = ssl._create_unverified_context()
     conn = http.client.HTTPSConnection(host, context=ctx)
-
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Referer": f"https://{host}/ipa"
+        "Referer": f"https://{host}/ipa",
     }
 
     body = f"user={user}&password={password}"
@@ -86,28 +85,27 @@ def login(host, user, password):
 
     COOKIE = resp.getheader("Set-Cookie").split(";", 1)[0]
     conn.close()
-
-    print("[+] Login successful")
-    debug(f"Cookie set: {COOKIE}")
+    print("[+] Login OK")
+    debug(f"COOKIE={COOKIE}")
 
 
 ###############################################################################
-# OUTPUT HELPERS
+# UTILS
 ###############################################################################
 
-def pretty(label, data):
-    print(f"\n====== {label} ======")
-    if "result" in data:
+def pretty(label, obj):
+    print(f"\n===== {label} =====")
+    if "result" in obj:
         try:
-            print(json.dumps(data["result"], indent=2))
+            print(json.dumps(obj["result"], indent=2))
         except:
-            print(data)
+            print(obj)
     else:
-        print(data)
+        print(obj)
 
-def extract_list(res):
+def extract_list(resp):
     try:
-        return res.get("result", {}).get("result", [])
+        return resp.get("result", {}).get("result", [])
     except:
         return []
 
@@ -128,25 +126,25 @@ def analyze_users(users):
         sshkeys = u.get("ipasshpubkey", [])
         hbac = u.get("memberof_hbacrule", [])
         sudo = u.get("memberof_sudorule", [])
-        krb = u.get("krbprincipalname", [])
+        principals = u.get("krbprincipalname", [])
 
         print(f"\n[USER] {uid}")
+        print(f"  Principals: {principals}")
         print(f"  Groups: {groups}")
+        print(f"  HBAC: {hbac}")
+        print(f"  SUDO: {sudo}")
         print(f"  SSH Keys: {len(sshkeys)} stored")
-        print(f"  HBAC Access: {hbac}")
-        print(f"  SUDO Access: {sudo}")
-        print(f"  Kerberos Principals: {krb}")
 
-        findings.append(f"[INFO] User {uid} visible → recon exposure")
+        findings.append(f"[INFO] User {uid} visible → recon surface")
 
         if sshkeys:
-            findings.append(f"[!] User {uid} has stored SSH keys (persistence surface)")
+            findings.append(f"[!] User {uid} stores SSH keys in IPA → persistence vector")
 
         if hbac:
-            findings.append(f"[!] User {uid} allowed by HBAC: {hbac}")
+            findings.append(f"[!] HBAC access for {uid}: {hbac}")
 
         if sudo:
-            findings.append(f"[!] User {uid} included in SUDO rules: {sudo}")
+            findings.append(f"[!] SUDO rule applies to user {uid}: {sudo}")
 
     return findings
 
@@ -163,30 +161,30 @@ def analyze_hosts(hosts):
 
     for h in entries:
         fqdn = h.get("fqdn", ["UNKNOWN"])[0]
-        krb = h.get("krbprincipalname", [])
+        principals = h.get("krbprincipalname", [])
         hgroups = h.get("memberofindirect_hostgroup", [])
         hbac = h.get("memberofindirect_hbacrule", [])
         sudo = h.get("memberofindirect_sudorule", [])
 
         print(f"\n[HOST] {fqdn}")
-        print(f"  Kerberos Principals: {krb}")
+        print(f"  Principals: {principals}")
         print(f"  Hostgroups: {hgroups}")
-        print(f"  HBAC Rules: {hbac}")
-        print(f"  SUDO Rules: {sudo}")
+        print(f"  HBAC: {hbac}")
+        print(f"  SUDO: {sudo}")
 
-        findings.append(f"[INFO] Host {fqdn} visible (infra enumeration)")
+        findings.append(f"[INFO] Host {fqdn} visible")
 
         if hbac:
-            findings.append(f"[!] Host {fqdn} controlled by HBAC: {hbac}")
+            findings.append(f"[!] Host {fqdn} part of HBAC rule: {hbac}")
 
         if sudo:
-            findings.append(f"[!] Host {fqdn} has SUDO escalation paths")
+            findings.append(f"[!] Host {fqdn} part of SUDO rule")
 
     return findings
 
 
 ###############################################################################
-# HBAC ANALYSIS
+# HBAC PRINCIPAL-AWARE ANALYSIS
 ###############################################################################
 
 def analyze_hbac(hbac):
@@ -195,6 +193,13 @@ def analyze_hbac(hbac):
 
     print("\n========== HBAC RULE ANALYSIS ==========")
 
+    # Create lookup maps
+    user_map = {u.get("uid", ["UNKNOWN"])[0]: u.get("krbprincipalname", [])
+                for u in GLOBAL_USERS}
+
+    host_map = {h.get("fqdn", ["UNKNOWN"])[0]: h.get("krbprincipalname", [])
+                for h in GLOBAL_HOSTS}
+
     for r in entries:
         name = r.get("cn", ["UNKNOWN"])[0]
         users = r.get("memberuser_user", [])
@@ -202,19 +207,26 @@ def analyze_hbac(hbac):
         hosts = r.get("memberhost_host", [])
         hgroups = r.get("memberhost_hostgroup", [])
 
-        print(f"\n[HBAC RULE] {name}")
-        print(f"  Users: {users}")
+        print(f"\n[HBAC] {name}")
+        print("  Users:")
+        for u in users:
+            print(f"    - {u} → {user_map.get(u, ['NO PRINCIPAL'])}")
+
         print(f"  Groups: {ugroups}")
-        print(f"  Hosts: {hosts}")
+
+        print("  Hosts:")
+        for h in hosts:
+            print(f"    - {h} → {host_map.get(h, ['NO PRINCIPAL'])}")
+
         print(f"  Hostgroups: {hgroups}")
 
-        findings.append(f"[!] HBAC {name}: users {users or ugroups} → hosts {hosts or hgroups}")
+        findings.append(f"[!] HBAC {name}: users {users or ugroups} → {hosts or hgroups}")
 
     return findings
 
 
 ###############################################################################
-# SUDO ANALYSIS
+# SUDO PRINCIPAL-AWARE ANALYSIS (FIXED)
 ###############################################################################
 
 def analyze_sudo(sudo):
@@ -223,26 +235,42 @@ def analyze_sudo(sudo):
 
     print("\n========== SUDO RULE ANALYSIS ==========")
 
+    user_map = {u.get("uid", ["UNKNOWN"])[0]: u.get("krbprincipalname", [])
+                for u in GLOBAL_USERS}
+
+    host_map = {h.get("fqdn", ["UNKNOWN"])[0]: h.get("krbprincipalname", [])
+                for h in GLOBAL_HOSTS}
+
     for r in entries:
         name = r.get("cn", ["UNKNOWN"])[0]
-        u = r.get("memberuser_user", [])
-        ug = r.get("memberuser_group", [])
+        users = r.get("memberuser_user", [])
+        ugroups = r.get("memberuser_group", [])
         hosts = r.get("memberhost_host", [])
         cmds = r.get("ipasudocommand", [])
 
         print(f"\n[SUDO RULE] {name}")
-        print(f"  Users: {u}")
-        print(f"  Groups: {ug}")
-        print(f"  Hosts: {hosts}")
+
+        print("  Users:")
+        for u in users:
+            print(f"    - {u} → {user_map.get(u, ['NO PRINCIPAL'])}")
+
+        print(f"  Groups: {ugroups}")
+
+        print("  Hosts:")
+        for h in hosts:
+            print(f"    - {h} → {host_map.get(h, ['NO PRINCIPAL'])}")
+
         print(f"  Commands: {cmds}")
 
-        findings.append(f"[!] SUDO rule {name} → escalation possible on {hosts}")
+        findings.append(
+            f"[!] SUDO {name}: {users} → {hosts} (principal aware)"
+        )
 
     return findings
 
 
 ###############################################################################
-# ROASTABILITY SCORING ENGINE (SAFE)
+# ROASTABILITY SCORING
 ###############################################################################
 
 def analyze_roastability(users):
@@ -252,13 +280,9 @@ def analyze_roastability(users):
     print("\n========== ROASTABILITY ANALYSIS ==========")
 
     SERVICE_PREFIXES = [
-        "http/", "host/", "ldap/", "cifs/", "nfs/", "smtp/", "imap/", "ssh/",
-        "postgres/", "kafka/", "redis/", "vault/", "mysql/", "mongo/"
+        "http/", "ldap/", "cifs/", "nfs/", "smtp/", "imap/", "ssh/", "host/"
     ]
-
-    SERVICE_CLASSES = [
-        "ipaservice", "pkiuser", "krbprincipalaux", "ipadb"
-    ]
+    SERVICE_CLASSES = ["ipaservice", "krbprincipalaux", "pkiuser"]
 
     for u in entries:
         uid = u.get("uid", ["UNKNOWN"])[0]
@@ -269,40 +293,40 @@ def analyze_roastability(users):
         reasons = []
 
         if len(principals) > 1:
-            risk = "MODERATE RISK"
-            reasons.append("Multiple Kerberos principals found")
+            risk = "MODERATE"
+            reasons.append("Multiple principals")
 
         for p in principals:
             if "/" in p:
-                risk = "HIGH RISK"
+                risk = "HIGH"
                 reasons.append(f"Service-style principal: {p}")
-
             for pref in SERVICE_PREFIXES:
                 if p.lower().startswith(pref):
-                    risk = "HIGH RISK"
-                    reasons.append(f"Principal matches service prefix {pref}")
+                    risk = "HIGH"
+                    reasons.append(f"Matches service prefix: {pref}")
 
         if any(c in objcls for c in SERVICE_CLASSES):
-            risk = "HIGH RISK"
-            reasons.append(f"ObjectClass indicates service identity")
+            risk = "HIGH"
+            reasons.append("Service objectclass present")
 
         print(f"\n[ROASTABILITY] {uid}")
         print(f"  Principals: {principals}")
-        print(f"  ObjectClasses: {objcls}")
         print(f"  Score: {risk}")
-        print(f"  Reasons: {reasons or ['None']}")
+        print(f"  Reasons: {reasons or ['none']}")
 
         if risk != "NO RISK":
-            findings.append(f"{uid} roastability={risk}: {reasons}")
+            findings.append(f"{uid}: {risk} → {reasons}")
 
     return findings
 
 
 ###############################################################################
-# MAIN EXECUTION
+# MAIN
 ###############################################################################
 
 def main():
+    global GLOBAL_USERS, GLOBAL_HOSTS
+
     if len(sys.argv) != 4:
         print("Usage: freeipa_attackgraph.py <ipa_host> <username> <password>")
         sys.exit(1)
@@ -311,7 +335,7 @@ def main():
 
     login(host, user, password)
 
-    print("\n[*] Enumerating objects...\n")
+    print("\n[*] Enumerating FreeIPA objects...\n")
 
     env = request(host, "env")
     users = request(host, "user_find")
@@ -324,6 +348,9 @@ def main():
     netgroups = request(host, "netgroup_find")
     dnszones = request(host, "dnszone_find")
 
+    GLOBAL_USERS = extract_list(users)
+    GLOBAL_HOSTS = extract_list(hosts)
+
     pretty("Environment", env)
     pretty("Users", users)
     pretty("Groups", groups)
@@ -334,7 +361,7 @@ def main():
     pretty("Netgroups", netgroups)
     pretty("DNS Zones", dnszones)
 
-    print("\n\n===== ATTACK PATH ANALYSIS =====")
+    print("\n===== ATTACK PATH ANALYSIS =====")
 
     findings = []
     findings += analyze_users(users)
@@ -347,7 +374,8 @@ def main():
     for f in findings:
         print(f)
 
-    print("\n[+] Enumeration complete.")
+    print("\n[+] Enumeration and analysis complete.")
+
 
 if __name__ == "__main__":
     main()
