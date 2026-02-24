@@ -3,18 +3,29 @@ import json
 import ssl
 import sys
 import http.client
+import time
 
-IPA_ENDPOINT = "/ipa/session/json"
 COOKIE = None
+IPA_JSON = "/ipa/session/json"
 
-###############################################################################
-# JSON-RPC WRAPPER
-###############################################################################
+###########################################################################
+# CONFIG
+###########################################################################
+
+DEBUG = True   # Set to False to silence debug output
+
+###########################################################################
+# HTTP / JSON-RPC HELPERS
+###########################################################################
+
+def log(msg):
+    if DEBUG:
+        print(f"[DEBUG] {msg}")
 
 def rpc(host, method, params=None):
     """
-    Send JSON-RPC request to FreeIPA.
-    Always returns a dictionary, even on errors.
+    Send a JSON-RPC request to FreeIPA.
+    ALWAYS returns a dict, even on error.
     """
     global COOKIE
 
@@ -32,33 +43,39 @@ def rpc(host, method, params=None):
     })
 
     ctx = ssl._create_unverified_context()
-    conn = http.client.HTTPSConnection(host, context=ctx)
-    conn.request("POST", IPA_ENDPOINT, payload, headers)
 
-    res = conn.getresponse()
+    try:
+        conn = http.client.HTTPSConnection(host, context=ctx, timeout=5)
+        conn.request("POST", IPA_JSON, payload, headers)
+        res = conn.getresponse()
+        raw = res.read().decode()
+        conn.close()
+    except Exception as e:
+        log(f"RPC network error calling {method}: {e}")
+        return {"error": "network"}
+
+    # capture cookie
     set_cookie = res.getheader("Set-Cookie")
     if set_cookie:
         COOKIE = set_cookie.split(";", 1)[0]
 
     try:
-        data = res.read().decode()
-        conn.close()
+        parsed = json.loads(raw)
+        log(f"RPC {method} returned keys: {list(parsed.keys())}")
+        return parsed
     except:
-        conn.close()
-        return {"error": "failed_read"}
-
-    try:
-        return json.loads(data)
-    except:
-        return {"error": "invalid_json", "raw": data}
+        log(f"RPC {method} returned non-JSON: {raw[:200]}")
+        return {"error": "invalid_json", "raw": raw}
 
 
-###############################################################################
+###########################################################################
 # LOGIN
-###############################################################################
+###########################################################################
 
 def login(host, username, password):
-    """Password auth via FreeIPA login session."""
+    """
+    Perform password-based login to FreeIPA UI backend.
+    """
     global COOKIE
 
     ctx = ssl._create_unverified_context()
@@ -71,11 +88,15 @@ def login(host, username, password):
 
     body = f"user={username}&password={password}"
 
-    conn.request("POST", "/ipa/session/login_password", body, headers)
-    res = conn.getresponse()
+    try:
+        conn.request("POST", "/ipa/session/login_password", body, headers)
+        res = conn.getresponse()
+    except Exception as e:
+        print(f"[!] Login connection error: {e}")
+        sys.exit(1)
 
     if res.status != 200:
-        print("[!] Authentication failed")
+        print("[!] Login failed")
         sys.exit(1)
 
     COOKIE = res.getheader("Set-Cookie").split(";", 1)[0]
@@ -83,89 +104,105 @@ def login(host, username, password):
     print("[+] Authenticated")
 
 
-###############################################################################
-# SAFE FIND (FIXED)
-###############################################################################
+###########################################################################
+# SAFE FIND HELPER
+###########################################################################
 
-def safe_find(host, method):
+def safe_rpc_list(host, method):
     """
-    Calls an IPA *_find method and ALWAYS returns a list.
-    Never crashes, even when:
-    - plugin is disabled
-    - API unsupported
-    - empty results
-    - "result" is null
-    - RPC returns an error block
+    Calls a *_find method safely and returns a list.
+    Never throws, never crashes.
     """
+    log(f"Calling {method} ...")
     res = rpc(host, method, [[], {"all": True}])
 
     if not isinstance(res, dict):
+        log(f"{method} returned non-dict")
         return []
 
     if "error" in res:
+        log(f"{method} returned error")
         return []
 
     if "result" not in res:
+        log(f"{method} missing result block")
         return []
 
-    if res["result"] is None:
+    r = res["result"]
+
+    if r is None or not isinstance(r, dict):
+        log(f"{method} returned null result block")
         return []
 
-    result_block = res["result"]
-    if not isinstance(result_block, dict):
-        return []
-
-    items = result_block.get("result", [])
+    items = r.get("result", [])
     if isinstance(items, list):
+        log(f"{method} returned list length: {len(items)}")
         return items
 
+    log(f"{method} result block has no list")
     return []
 
 
-###############################################################################
-# ENUMERATION
-###############################################################################
+###########################################################################
+# ENUMERATION PHASE
+###########################################################################
 
-def gather_data(host):
-    print("[*] Enumerating FreeIPA objects...")
-
+def enumerate_lowpriv_data(host):
+    """
+    Enumerates EVERYTHING a low-priv FreeIPA user can possibly see.
+    """
     data = {}
 
-    # env usually always works
-    env = rpc(host, "env")
-    data["env"] = env.get("result", {})
+    # Always works: env
+    log("Fetching env ...")
+    env_res = rpc(host, "env")
+    data["env"] = env_res.get("result", {})
+    log(f"env keys: {list(data['env'].keys())}")
 
-    data["users"] = safe_find(host, "user_find")
-    data["groups"] = safe_find(host, "group_find")
-    data["roles"] = safe_find(host, "role_find")
-    data["privileges"] = safe_find(host, "privilege_find")
-    data["permissions"] = safe_find(host, "permission_find")
-    data["sudorules"] = safe_find(host, "sudorule_find")
-    data["hbacrules"] = safe_find(host, "hbacrule_find")
-    data["hosts"] = safe_find(host, "host_find")
-    data["dnszones"] = safe_find(host, "dnszone_find")
-    data["pwpolicy"] = safe_find(host, "pwpolicy_find")
+    # User listing
+    data["users"] = safe_rpc_list(host, "user_find")
 
-    # DNS records per zone (ignore failures)
-    for z in data["dnszones"]:
-        if "idnsname" in z:
-            zone = z["idnsname"][0]
-            recs = rpc(host, "dnsrecord_find", [[zone], {"all": True}])
-            if "result" in recs and recs["result"] and isinstance(recs["result"], dict):
-                z["records"] = recs["result"].get("result", [])
+    # Group listing
+    data["groups"] = safe_rpc_list(host, "group_find")
+
+    # Host listing (may fail silently)
+    data["hosts"] = safe_rpc_list(host, "host_find")
+
+    # Password policy (often visible to everyone)
+    data["pwpolicy"] = safe_rpc_list(host, "pwpolicy_find")
+
+    # DNS (usually blocked for low-priv)
+    data["dns"] = safe_rpc_list(host, "dnszone_find")
 
     return data
 
 
-###############################################################################
-# FAST MODE FINDINGS
-###############################################################################
+###########################################################################
+# FAST FINDINGS
+###########################################################################
 
 def fast_findings(data):
     findings = []
 
-    # Weak password policies
-    for pp in data.get("pwpolicy", []):
+    users = data.get("users", [])
+    groups = data.get("groups", [])
+    hosts = data.get("hosts", [])
+    pwpol = data.get("pwpolicy", [])
+
+    # Can see all users = major information disclosure
+    if len(users) > 1:
+        findings.append("[!] Low-priv user can enumerate ALL users (usernames harvested)")
+
+    # Can see groups
+    if len(groups) > 0:
+        findings.append("[!] Low-priv user can enumerate ALL groups (RBAC exposure)")
+
+    # Can see hosts
+    if len(hosts) > 0:
+        findings.append("[!] Low-priv user can enumerate hosts (infrastructure recon)")
+
+    # Password policy weaknesses
+    for pp in pwpol:
         maxlife = None
         minlength = None
 
@@ -174,7 +211,6 @@ def fast_findings(data):
                 maxlife = int(pp["krbmaxpwdlife"][0])
             except:
                 pass
-
         if "krbpwdminlength" in pp and isinstance(pp["krbpwdminlength"], list):
             try:
                 minlength = int(pp["krbpwdminlength"][0])
@@ -182,170 +218,103 @@ def fast_findings(data):
                 pass
 
         if maxlife and maxlife > 30:
-            findings.append("[!] Weak password policy: password lifetime > 30 days")
+            findings.append("[!] Weak password lifetime (>30 days) → spraying viable")
 
         if minlength and minlength < 10:
-            findings.append("[!] Weak password policy: minimum length < 10")
-
-    # Users with no 2FA
-    for u in data["users"]:
-        uname = u.get("uid", ["?"])[0]
-        if "ipauserauthtype" not in u:
-            findings.append(f"[!] User {uname} has no 2FA configured")
-
-    # HBAC too broad
-    for h in data["hbacrules"]:
-        name = h.get("cn", ["?"])[0]
-        # If no user restriction + no service restriction
-        if "memberuser_user" not in h and "hbacsvc" not in h:
-            findings.append(f"[!] HBAC '{name}' may allow broad access")
-
-    # SUDO ANYCMD
-    for s in data["sudorules"]:
-        sname = s.get("cn", ["?"])[0]
-        cmds = s.get("sudoallowcommand", [])
-        if any("ALL" in c.upper() for c in cmds):
-            findings.append(f"[CRITICAL] Sudo rule '{sname}' allows ALL commands")
-
-    # DNS wildcard
-    for z in data["dnszones"]:
-        zname = z.get("idnsname", ["?"])[0]
-        for rec in z.get("records", []):
-            rname = rec.get("idnsname", ["?"])[0]
-            if rname == "*" or rname.lower() == "wildcard":
-                findings.append(f"[!] Wildcard DNS entry detected in zone '{zname}'")
+            findings.append("[!] Weak min password length (<10)")
 
     return findings
 
 
-###############################################################################
-# DEEP ATTACK PATH ENGINE
-###############################################################################
+###########################################################################
+# ATTACK PATH ANALYSIS (LOW PRIV VERSION)
+###########################################################################
 
-def deep_attack_paths(data):
-    """BloodHound-style multi-hop privilege path detection."""
+def build_attack_paths(data):
+    """
+    A low-priv user usually cannot see roles/privileges,
+    so we infer:
+    - user -> group
+    - group -> nested group (if any)
+    - privileged groups by name heuristic
+    """
+    users = data.get("users", [])
+    groups = data.get("groups", [])
 
-    def get_name(obj, key="cn", alt="uid"):
-        if key in obj:
-            return obj[key][0]
-        if alt in obj:
-            return obj[alt][0]
-        return "?"
+    G = []
 
-    # Build name maps
-    users = {get_name(u, "uid"): u for u in data["users"]}
-    roles = {get_name(r): r for r in data["roles"]}
-    privileges = {get_name(p): p for p in data["privileges"]}
-    permissions = {get_name(p): p for p in data["permissions"]}
+    # Identify privileged groups by name heuristic
+    priv_group_keywords = ["admin", "sudo", "wheel", "ops", "security"]
 
-    edges = []
+    priv_groups = []
+    for g in groups:
+        name = g.get("cn", ["?"])[0].lower()
+        if any(k in name for k in priv_group_keywords):
+            priv_groups.append(name)
 
-    # User → Group
-    for uname, u in users.items():
-        for g in u.get("memberof_group", []):
-            edges.append((uname, "member_of_group", g))
+    # Build edges user -> groups
+    for u in users:
+        uname = u.get("uid", ["?"])[0]
+        memberof = u.get("memberof_group", [])
+        for mg in memberof:
+            G.append((uname, "member_of", mg))
 
-    # Group → Role
-    for rname, r in roles.items():
-        for g in r.get("member_group", []):
-            edges.append((g, "grants_role", rname))
+    # Nested groups
+    for g in groups:
+        gname = g.get("cn", ["?"])[0]
+        if "member_group" in g:
+            for ng in g["member_group"]:
+                G.append((gname, "nested_group", ng))
 
-    # Role → Privilege
-    for pname, p in privileges.items():
-        for r in p.get("memberof_role", []):
-            edges.append((r, "grants_privilege", pname))
+    # Detect attack paths: user → group → privileged group
+    paths = []
+    for (a, rel, b) in G:
+        if b.lower() in priv_groups:
+            paths.append([(a, rel, b)])
 
-    # Privilege → Permission
-    for permname, perm in permissions.items():
-        for p in perm.get("memberof_privilege", []):
-            edges.append((p, "grants_permission", permname))
-
-    # Permission → Capabilities
-    for permname, perm in permissions.items():
-        rights = perm.get("ipapermright", [])
-        locs = perm.get("ipapermlocation", [])
-
-        if "write" in rights:
-            if any("host" in l for l in locs):
-                edges.append((permname, "can_modify_hosts", "HOST_WRITE"))
-
-        if any("hbac" in l for l in locs):
-            edges.append((permname, "modify_hbac", "HBAC_RULES"))
-
-        if any("sudo" in l for l in locs):
-            edges.append((permname, "modify_sudo", "SUDO_RULES"))
-
-    TARGETS = ["can_modify_hosts", "modify_hbac", "modify_sudo"]
-
-    def dfs(start, visited=None, path=None):
-        if visited is None:
-            visited = set()
-        if path is None:
-            path = []
-
-        visited.add(start)
-
-        for src, rel, dst in edges:
-            if src != start:
-                continue
-
-            new_path = path + [(src, rel, dst)]
-
-            if rel in TARGETS:
-                yield new_path
-
-            if dst not in visited:
-                yield from dfs(dst, visited, new_path)
-
-    attack_paths = []
-    for user in users:
-        for p in dfs(user):
-            attack_paths.append(p)
-
-    return attack_paths
+    return paths
 
 
-###############################################################################
+###########################################################################
 # MAIN
-###############################################################################
+###########################################################################
 
 def main():
-    if len(sys.argv) != 5:
-        print("Usage: freeipa_attack_paths.py <host> <user> <password> <mode>")
-        print("Modes: fast | deep")
+    if len(sys.argv) != 4:
+        print("Usage: freeipa_lowpriv_enum.py <host> <user> <password>")
         sys.exit(1)
 
     host = sys.argv[1]
-    username = sys.argv[2]
+    user = sys.argv[2]
     password = sys.argv[3]
-    mode = sys.argv[4]
 
-    login(host, username, password)
-    data = gather_data(host)
+    login(host, user, password)
 
-    if mode == "fast":
-        print("\n=== FAST MODE FINDINGS ===\n")
-        f = fast_findings(data)
-        if not f:
-            print("No immediate misconfigurations found.")
-            return
-        for x in f:
-            print(x)
+    print("[*] Running low-priv FreeIPA enumeration...")
+    data = enumerate_lowpriv_data(host)
 
-    elif mode == "deep":
-        print("\n=== DEEP ATTACK PATHS ===\n")
-        paths = deep_attack_paths(data)
-        if not paths:
-            print("No multi-hop attack paths found.")
-            return
+    print("\n=== DEBUG SUMMARY ===")
+    for k in data:
+        print(f"{k}: {len(data[k]) if isinstance(data[k], list) else 'OK'}")
 
+    print("\n=== FAST FINDINGS ===")
+    ff = fast_findings(data)
+    if not ff:
+        print("No simple misconfigurations detected.")
+    else:
+        for f in ff:
+            print(f)
+
+    print("\n=== ATTACK PATHS (INFERRED) ===")
+    paths = build_attack_paths(data)
+    if not paths:
+        print("No obvious privilege paths found.")
+    else:
         for p in paths:
             print("\n[ATTACK PATH]")
-            for src, rel, dst in p:
-                print(f"  {src} --{rel}--> {dst}")
-
-    else:
-        print("Invalid mode. Use fast or deep.")
+            for step in p:
+                a, rel, b = step
+                print(f"  {a} --{rel}--> {b}")
 
 
 if __name__ == "__main__":
