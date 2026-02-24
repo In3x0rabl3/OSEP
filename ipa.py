@@ -233,7 +233,7 @@ def analyze_sudo(sudo):
         print(f"\n[SUDO RULE] {name}")
         print(f"  Users: {u}")
         print(f"  Groups: {ug}")
-        print(f  "  Hosts: {hosts}")
+        print(f"  Hosts: {hosts}")
         print(f"  Commands: {cmds}")
 
         findings.append(f"[!] SUDO rule {name} → escalation possible on {hosts}")
