@@ -1,5 +1,0 @@
-MATCH p=(x)-[*1..6]->(c:Computer)
-WHERE c.name = 'DIRECTORY-OLYMPUS.OKC1.CEREBRASCLOUD.COM'
-  AND x <> c
-RETURN p
-LIMIT 1000
