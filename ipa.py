@@ -6,9 +6,7 @@ import sys
 
 IPA_ENDPOINT = "/ipa/session/json"
 COOKIE = None
-
-# Enable verbose debug output
-DEBUG = True
+DEBUG = True  # Keep debug on so you can see RPC behavior
 
 def debug(msg):
     if DEBUG:
@@ -30,34 +28,34 @@ def request(host, method, params=None):
     })
 
     context = ssl._create_unverified_context()
-
-    debug(f"→ RPC CALL: {method}  params={params}")
+    debug(f"RPC CALL: {method}")
 
     conn = http.client.HTTPSConnection(host, context=context)
     conn.request("POST", IPA_ENDPOINT, payload, headers)
     response = conn.getresponse()
 
+    # Session cookie update
     set_cookie = response.getheader("Set-Cookie")
     if set_cookie:
         COOKIE = set_cookie.split(";", 1)[0]
-        debug(f"[DEBUG] Updated session cookie: {COOKIE}")
+        debug(f"Updated session cookie: {COOKIE}")
 
-    data = response.read().decode()
+    raw = response.read().decode()
     conn.close()
 
+    # Parse JSON
     try:
-        parsed = json.loads(data)
-        debug(f"← RPC RESULT: {method} returned keys {list(parsed.keys())}")
+        parsed = json.loads(raw)
+        debug(f"RPC RESULT: {method} keys: {list(parsed.keys())}")
         return parsed
-    except json.JSONDecodeError:
-        debug(f"[DEBUG] INVALID JSON from {method}: {data[:200]}")
-        return {"error": "invalid_json", "raw": data}
+    except:
+        debug(f"[INVALID JSON] {raw[:200]}")
+        return {"error": "invalid_json", "raw": raw}
 
 
 def login(host, user, password):
     global COOKIE
-
-    debug("Attempting login…")
+    debug("Attempting login...")
 
     context = ssl._create_unverified_context()
     conn = http.client.HTTPSConnection(host, context=context)
@@ -79,54 +77,105 @@ def login(host, user, password):
     COOKIE = resp.getheader("Set-Cookie").split(";", 1)[0]
     conn.close()
 
-    print("[+] Authenticated successfully.")
-    debug(f"[DEBUG] Received session cookie: {COOKIE}")
+    print("[+] Authenticated")
+    debug(f"Cookie: {COOKIE}")
 
 
 def pretty(label, data):
     print(f"\n=== {label} ===")
     try:
         print(json.dumps(data.get("result", data), indent=2))
-    except:
+    except Exception:
         print(data)
 
 
 #######################################################################
-#  RED TEAM ANALYSIS ENGINE (SAFE + ONLY USES AVAILABLE DATA)
+#  RED TEAM FINDINGS WITH PER-OBJECT CONTEXT
 #######################################################################
 
-def redteam_findings(env, users, groups, hosts, services):
+def analyze_users(users):
     findings = []
 
-    # Weak password policy
-    if "result" in env:
-        maxlife = env["result"].get("krbmaxpwdlife")
-        minlength = env["result"].get("krbpwdminlength")
+    user_list = users.get("result", {}).get("result", [])
+    print("\n========== USER ANALYSIS ==========")
 
-        if maxlife and isinstance(maxlife, int) and maxlife > 30:
-            findings.append("[!] Password lifetime > 30 days → password spraying viable.")
-        if minlength and isinstance(minlength, int) and minlength < 10:
-            findings.append("[!] Password minimum length < 10 → brute force easier.")
+    for u in user_list:
+        uid = u.get("uid", ["UNKNOWN"])[0]
+        mail = u.get("mail", ["no-email"])[0]
+        groups = u.get("memberof_group", [])
+        authtype = u.get("ipauserauthtype", ["no-2fa"])
 
-    # User enumeration
-    if "result" in users and isinstance(users["result"].get("result"), list):
-        user_count = len(users["result"]["result"])
-        if user_count > 1:
-            findings.append(f"[!] Low-priv user can enumerate {user_count} users → intel leak.")
+        print(f"\n[USER] {uid}")
+        print(f"  Email: {mail}")
+        print(f"  Groups: {groups}")
 
-    # Group enumeration
-    if "result" in groups and isinstance(groups["result"].get("result"), list):
-        findings.append("[!] Groups visible → RBAC structure leaked.")
+        # Vulnerability: No 2FA
+        if "otp" not in authtype:
+            print("  [VULN] User has NO 2FA configured")
+            findings.append(f"User {uid} has no 2FA → vulnerable to phishing/credential reuse")
 
-    # Hosts visible
-    if "result" in hosts and isinstance(hosts["result"].get("result"), list):
-        count = len(hosts["result"]["result"])
-        if count > 0:
-            findings.append(f"[!] {count} hosts visible → lateral movement / recon target expansion.")
+        # Low-priv user can see all users
+        print("  [INFO] Low-priv user can enumerate this account (privacy leak)")
 
-    # Services visible
-    if "result" in services and isinstance(services["result"].get("result"), list):
-        findings.append("[!] Kerberos service principals visible → potential service abuse mapping.")
+    return findings
+
+
+def analyze_groups(groups):
+    group_list = groups.get("result", {}).get("result", [])
+    findings = []
+
+    print("\n========== GROUP ANALYSIS ==========")
+
+    for g in group_list:
+        name = g.get("cn", ["UNKNOWN"])[0]
+        members = g.get("member_user", [])
+        nested = g.get("member_group", [])
+
+        print(f"\n[GROUP] {name}")
+        print(f"  Members: {members}")
+        print(f"  Nested Groups: {nested}")
+
+        # Privileged group detection
+        priv_keywords = ["admin", "wheel", "sudo", "ops"]
+        if any(k in name.lower() for k in priv_keywords):
+            print(f"  [VULN] Low-priv user can SEE privileged group: {name}")
+            findings.append(f"Group {name} visible → RBAC structure leak")
+
+    return findings
+
+
+def analyze_hosts(hosts):
+    host_list = hosts.get("result", {}).get("result", [])
+    findings = []
+
+    print("\n========== HOST ANALYSIS ==========")
+
+    for h in host_list:
+        fqdn = h.get("fqdn", ["UNKNOWN"])[0]
+        krb = h.get("krbprincipalname", [])
+
+        print(f"\n[HOST] {fqdn}")
+        print(f"  Kerberos Principals: {krb}")
+
+        print("  [INFO] Host visible to low-priv user (infra exposure)")
+
+        findings.append(f"Host {fqdn} visible → facilitates lateral movement reconnaissance")
+
+    return findings
+
+
+def analyze_services(services):
+    svc_list = services.get("result", {}).get("result", [])
+    findings = []
+
+    print("\n========== SERVICE PRINCIPAL ANALYSIS ==========")
+
+    for s in svc_list:
+        princ = s.get("krbprincipalname", ["UNKNOWN"])[0]
+        print(f"\n[SERVICE] {princ}")
+
+        # All service principals reveal internal architecture
+        findings.append(f"Service {princ} visible → reveals internal service topology")
 
     return findings
 
@@ -144,10 +193,9 @@ def main():
     user = sys.argv[2]
     password = sys.argv[3]
 
-    print("[*] Logging in...")
     login(host, user, password)
 
-    print("[*] Performing stable enumeration...\n")
+    print("\n[*] Enumerating FreeIPA objects...\n")
 
     env = request(host, "env")
     users = request(host, "user_find", [[], {"all": True}])
@@ -155,22 +203,29 @@ def main():
     hosts = request(host, "host_find", [[], {"all": True}])
     services = request(host, "service_find", [[], {"all": True}])
 
+    # Print raw results
     pretty("Environment", env)
     pretty("Users", users)
     pretty("Groups", groups)
     pretty("Hosts", hosts)
     pretty("Services", services)
 
-    print("\n=== RED TEAM FINDINGS ===")
-    findings = redteam_findings(env, users, groups, hosts, services)
+    print("\n\n======== RED TEAM FINDINGS (DETAILED PER-OBJECT) ========")
 
+    findings = []
+    findings += analyze_users(users)
+    findings += analyze_groups(groups)
+    findings += analyze_hosts(hosts)
+    findings += analyze_services(services)
+
+    print("\n======== SUMMARY ========")
     if not findings:
-        print("No obvious misconfigurations detected.")
+        print("No vulnerabilities found (based on visible data).")
     else:
         for f in findings:
-            print(f)
+            print(f"- {f}")
 
-    print("\n[+] Enumeration completed.")
+    print("\n[+] Enumeration completed.\n")
 
 
 if __name__ == "__main__":
