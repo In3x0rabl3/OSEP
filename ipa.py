@@ -6,56 +6,70 @@ import sys
 
 IPA_ENDPOINT = "/ipa/session/json"
 COOKIE = None
-DEBUG = True  # Keep debug on so you can see RPC behavior
+DEBUG = True  # Turn debug logging on/off
 
 def debug(msg):
     if DEBUG:
         print(f"[DEBUG] {msg}")
 
+###########################################################################
+# RPC HELPERS
+###########################################################################
+
 def request(host, method, params=None):
+    """Perform a JSON-RPC call to FreeIPA."""
     global COOKIE
+
     headers = {
         "Content-Type": "application/json",
         "Referer": f"https://{host}/ipa",
     }
-
     if COOKIE:
         headers["Cookie"] = COOKIE
 
     payload = json.dumps({
         "method": method,
-        "params": params or [[], {}]
+        "params": params or [[], {"all": True}]
     })
 
     context = ssl._create_unverified_context()
-    debug(f"RPC CALL: {method}")
 
-    conn = http.client.HTTPSConnection(host, context=context)
-    conn.request("POST", IPA_ENDPOINT, payload, headers)
-    response = conn.getresponse()
+    debug(f"--> RPC CALL: {method}")
 
-    # Session cookie update
-    set_cookie = response.getheader("Set-Cookie")
+    try:
+        conn = http.client.HTTPSConnection(host, context=context)
+        conn.request("POST", IPA_ENDPOINT, payload, headers)
+        resp = conn.getresponse()
+    except Exception as e:
+        debug(f"RPC ERROR: {method}: {e}")
+        return {"error": str(e)}
+
+    # Capture cookies
+    set_cookie = resp.getheader("Set-Cookie")
     if set_cookie:
         COOKIE = set_cookie.split(";", 1)[0]
-        debug(f"Updated session cookie: {COOKIE}")
+        debug(f"Updated cookie: {COOKIE}")
 
-    raw = response.read().decode()
+    raw = resp.read().decode()
     conn.close()
 
-    # Parse JSON
     try:
         parsed = json.loads(raw)
-        debug(f"RPC RESULT: {method} keys: {list(parsed.keys())}")
+        debug(f"<-- RPC RESULT: {method} keys={list(parsed.keys())}")
         return parsed
     except:
         debug(f"[INVALID JSON] {raw[:200]}")
         return {"error": "invalid_json", "raw": raw}
 
 
+###########################################################################
+# LOGIN
+###########################################################################
+
 def login(host, user, password):
     global COOKIE
-    debug("Attempting login...")
+
+    debug("Logging in...")
 
     context = ssl._create_unverified_context()
     conn = http.client.HTTPSConnection(host, context=context)
@@ -66,127 +80,171 @@ def login(host, user, password):
     }
 
     body = f"user={user}&password={password}"
-
     conn.request("POST", "/ipa/session/login_password", body, headers)
     resp = conn.getresponse()
 
     if resp.status != 200:
-        print("[!] Login failed")
+        print("[!] Login failed!")
         sys.exit(1)
 
     COOKIE = resp.getheader("Set-Cookie").split(";", 1)[0]
     conn.close()
 
     print("[+] Authenticated")
-    debug(f"Cookie: {COOKIE}")
+    debug(f"Cookie={COOKIE}")
 
+
+###########################################################################
+# PRETTY PRINT
+###########################################################################
 
 def pretty(label, data):
-    print(f"\n=== {label} ===")
-    try:
-        print(json.dumps(data.get("result", data), indent=2))
-    except Exception:
+    print(f"\n===== {label} =====")
+    if "result" in data:
+        try:
+            print(json.dumps(data["result"], indent=2))
+        except:
+            print(data)
+    else:
         print(data)
 
 
-#######################################################################
-#  RED TEAM FINDINGS WITH PER-OBJECT CONTEXT
-#######################################################################
+###########################################################################
+# ATTACK PATH ENGINE
+###########################################################################
+
+def extract_list(res):
+    try:
+        return res.get("result", {}).get("result", [])
+    except:
+        return []
 
 def analyze_users(users):
+    entries = extract_list(users)
     findings = []
 
-    user_list = users.get("result", {}).get("result", [])
     print("\n========== USER ANALYSIS ==========")
 
-    for u in user_list:
+    for u in entries:
         uid = u.get("uid", ["UNKNOWN"])[0]
-        mail = u.get("mail", ["no-email"])[0]
         groups = u.get("memberof_group", [])
-        authtype = u.get("ipauserauthtype", ["no-2fa"])
+        hbac = u.get("memberof_hbacrule", [])
+        sudo = u.get("memberof_sudorule", [])
+        sshkeys = u.get("ipasshpubkey", [])
+        krb = u.get("krbprincipalname", [])
 
         print(f"\n[USER] {uid}")
-        print(f"  Email: {mail}")
         print(f"  Groups: {groups}")
+        print(f"  HBAC Access: {hbac}")
+        print(f"  SUDO Access: {sudo}")
+        print(f"  SSH Keys: {len(sshkeys)} keys")
+        print(f"  Kerberos Principals: {krb}")
 
-        # Vulnerability: No 2FA
-        if "otp" not in authtype:
-            print("  [VULN] User has NO 2FA configured")
-            findings.append(f"User {uid} has no 2FA → vulnerable to phishing/credential reuse")
+        if not sshkeys:
+            findings.append(f"[!] User {uid} has no SSH keys → password-only auth.")
+        else:
+            findings.append(f"[!] User {uid} has SSH keys in IPA → persistence risk.")
 
-        # Low-priv user can see all users
-        print("  [INFO] Low-priv user can enumerate this account (privacy leak)")
+        if len(krb) > 1:
+            findings.append(f"[!] User {uid} has multiple Kerberos identities.")
 
-    return findings
+        if hbac:
+            findings.append(f"[!] User {uid} can access hosts via HBAC rules: {hbac}")
 
-
-def analyze_groups(groups):
-    group_list = groups.get("result", {}).get("result", [])
-    findings = []
-
-    print("\n========== GROUP ANALYSIS ==========")
-
-    for g in group_list:
-        name = g.get("cn", ["UNKNOWN"])[0]
-        members = g.get("member_user", [])
-        nested = g.get("member_group", [])
-
-        print(f"\n[GROUP] {name}")
-        print(f"  Members: {members}")
-        print(f"  Nested Groups: {nested}")
-
-        # Privileged group detection
-        priv_keywords = ["admin", "wheel", "sudo", "ops"]
-        if any(k in name.lower() for k in priv_keywords):
-            print(f"  [VULN] Low-priv user can SEE privileged group: {name}")
-            findings.append(f"Group {name} visible → RBAC structure leak")
+        if sudo:
+            findings.append(f"[!] User {uid} has sudo capability via rules: {sudo}")
 
     return findings
 
 
 def analyze_hosts(hosts):
-    host_list = hosts.get("result", {}).get("result", [])
+    entries = extract_list(hosts)
     findings = []
 
     print("\n========== HOST ANALYSIS ==========")
 
-    for h in host_list:
+    for h in entries:
         fqdn = h.get("fqdn", ["UNKNOWN"])[0]
         krb = h.get("krbprincipalname", [])
+        sshkeys = h.get("ipasshpubkey", [])
+        hgroups = h.get("memberofindirect_hostgroup", [])
+        hbac = h.get("memberofindirect_hbacrule", [])
+        sudo = h.get("memberofindirect_sudorule", [])
 
         print(f"\n[HOST] {fqdn}")
-        print(f"  Kerberos Principals: {krb}")
+        print(f"  Principals: {krb}")
+        print(f"  Hostgroups: {hgroups}")
+        print(f"  HBAC Rules: {hbac}")
+        print(f"  SUDO Rules: {sudo}")
+        print(f"  SSH keys: {len(sshkeys)} stored")
 
-        print("  [INFO] Host visible to low-priv user (infra exposure)")
+        findings.append(f"[INFO] Host {fqdn} is visible → recon exposure")
 
-        findings.append(f"Host {fqdn} visible → facilitates lateral movement reconnaissance")
+        if hbac:
+            findings.append(f"[!] Host {fqdn} participates in HBAC: {hbac}")
+
+        if sudo:
+            findings.append(f"[!] Host {fqdn} participates in SUDO rules.")
 
     return findings
 
 
-def analyze_services(services):
-    svc_list = services.get("result", {}).get("result", [])
+def analyze_hbac(hbac):
+    entries = extract_list(hbac)
     findings = []
 
-    print("\n========== SERVICE PRINCIPAL ANALYSIS ==========")
+    print("\n========== HBAC RULES ==========")
 
-    for s in svc_list:
-        princ = s.get("krbprincipalname", ["UNKNOWN"])[0]
-        print(f"\n[SERVICE] {princ}")
+    for r in entries:
+        name = r.get("cn", ["UNKNOWN"])[0]
+        u = r.get("memberuser_user", [])
+        ug = r.get("memberuser_group", [])
+        hg = r.get("memberhost_hostgroup", [])
+        hosts = r.get("memberhost_host", [])
 
-        # All service principals reveal internal architecture
-        findings.append(f"Service {princ} visible → reveals internal service topology")
+        print(f"\n[HBAC RULE] {name}")
+        print(f"  Users: {u}")
+        print(f"  User Groups: {ug}")
+        print(f"  Hostgroups: {hg}")
+        print(f"  Hosts: {hosts}")
+
+        findings.append(f"[!] HBAC rule {name} → users {u or ug} can access hosts {hosts or hg}")
 
     return findings
 
 
-#######################################################################
-#  MAIN EXECUTION
-#######################################################################
+def analyze_sudo(sudo):
+    entries = extract_list(sudo)
+    findings = []
+
+    print("\n========== SUDO RULES ==========")
+
+    for r in entries:
+        name = r.get("cn", ["UNKNOWN"])[0]
+        u = r.get("memberuser_user", [])
+        ug = r.get("memberuser_group", [])
+        hg = r.get("memberhost_hostgroup", [])
+        hosts = r.get("memberhost_host", [])
+        cmds = r.get("ipasudocommand", [])
+
+        print(f"\n[SUDO RULE] {name}")
+        print(f"  Users: {u}")
+        print(f"  Groups: {ug}")
+        print(f"  Hosts: {hosts}")
+        print(f"  Commands: {cmds}")
+
+        findings.append(f"[!] SUDO rule {name} grants escalation on hosts {hosts}")
+
+    return findings
+
+
+###########################################################################
+# RUN ENUM + ATTACK ANALYSIS
+###########################################################################
 
 def main():
     if len(sys.argv) != 4:
-        print("Usage: freeipa_enum.py <ipa_host> <username> <password>")
+        print("Usage: freeipa_attackgraph.py <ipa_host> <username> <password>")
         sys.exit(1)
 
     host = sys.argv[1]
@@ -195,38 +253,43 @@ def main():
 
     login(host, user, password)
 
-    print("\n[*] Enumerating FreeIPA objects...\n")
-
+    # Core enumerations
     env = request(host, "env")
-    users = request(host, "user_find", [[], {"all": True}])
-    groups = request(host, "group_find", [[], {"all": True}])
-    hosts = request(host, "host_find", [[], {"all": True}])
-    services = request(host, "service_find", [[], {"all": True}])
+    users = request(host, "user_find")
+    groups = request(host, "group_find")
+    hosts = request(host, "host_find")
+    services = request(host, "service_find")
 
-    # Print raw results
+    # New critical queries:
+    hbac = request(host, "hbacrule_find")
+    sudo = request(host, "sudorule_find")
+    hostgroup = request(host, "hostgroup_find")
+    netgroup = request(host, "netgroup_find")
+    dnszones = request(host, "dnszone_find")
+
     pretty("Environment", env)
     pretty("Users", users)
     pretty("Groups", groups)
     pretty("Hosts", hosts)
-    pretty("Services", services)
+    pretty("HBAC Rules", hbac)
+    pretty("SUDO Rules", sudo)
+    pretty("Hostgroups", hostgroup)
+    pretty("Netgroups", netgroup)
+    pretty("DNS Zones", dnszones)
 
-    print("\n\n======== RED TEAM FINDINGS (DETAILED PER-OBJECT) ========")
+    print("\n\n===== ATTACK PATH ANALYSIS =====")
 
     findings = []
     findings += analyze_users(users)
-    findings += analyze_groups(groups)
     findings += analyze_hosts(hosts)
-    findings += analyze_services(services)
+    findings += analyze_hbac(hbac)
+    findings += analyze_sudo(sudo)
 
-    print("\n======== SUMMARY ========")
-    if not findings:
-        print("No vulnerabilities found (based on visible data).")
-    else:
-        for f in findings:
-            print(f"- {f}")
+    print("\n===== SUMMARY =====")
+    for f in findings:
+        print(f)
 
-    print("\n[+] Enumeration completed.\n")
-
+    print("\n[+] FreeIPA Attack Graph Enumeration Complete")
 
 if __name__ == "__main__":
     main()
