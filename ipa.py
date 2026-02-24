@@ -1,121 +1,113 @@
 #!/usr/bin/env python3
-import subprocess
+import http.client
 import json
+import ssl
 import sys
-import shutil
 
-BANNER = r"""
-===========================================
-     FreeIPA Enumeration Tool (No deps)
-===========================================
-"""
+IPA_ENDPOINT = "/ipa/session/json"
+COOKIE = None
 
-def run_cmd(cmd):
-    """Run a shell command and return output or empty string."""
+def request(host, method, params=None):
+    global COOKIE
+    headers = {
+        "Content-Type": "application/json",
+        "Referer": f"https://{host}/ipa",
+    }
+
+    if COOKIE:
+        headers["Cookie"] = COOKIE
+
+    payload = json.dumps({
+        "method": method,
+        "params": params or [[], {}]
+    })
+
+    context = ssl._create_unverified_context()  # Ignore cert errors
+
+    conn = http.client.HTTPSConnection(host, context=context)
+    conn.request("POST", IPA_ENDPOINT, payload, headers)
+    response = conn.getresponse()
+
+    # Capture session cookies
+    set_cookie = response.getheader("Set-Cookie")
+    if set_cookie:
+        COOKIE = set_cookie.split(";", 1)[0]
+
+    data = response.read().decode()
+    conn.close()
+
     try:
-        result = subprocess.check_output(
-            cmd, stderr=subprocess.DEVNULL, shell=True, text=True
-        )
-        return result.strip()
-    except Exception:
-        return ""
+        return json.loads(data)
+    except:
+        return {"error": "invalid json", "raw": data}
 
 
-def check_tools():
-    """Ensure required system tools are installed."""
-    required = ["ldapsearch", "ipa", "klist"]
-    missing = [t for t in required if shutil.which(t) is None]
+def login(host, user, password):
+    """Perform password-based login to FreeIPA."""
+    global COOKIE
 
-    if missing:
-        print(f"[!] Missing required system tools: {', '.join(missing)}")
-        print("[!] Install FreeIPA client packages on the machine.")
+    context = ssl._create_unverified_context()
+    conn = http.client.HTTPSConnection(host, context=context)
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Referer": f"https://{host}/ipa",
+    }
+
+    body = f"user={user}&password={password}"
+
+    conn.request("POST", "/ipa/session/login_password", body, headers)
+    resp = conn.getresponse()
+
+    if resp.status != 200:
+        print("[!] Login failed")
         sys.exit(1)
 
-def get_kcred_info():
-    """Check if Kerberos credentials exist."""
-    print("[*] Checking Kerberos TGT...")
-    out = run_cmd("klist")
-    if "Default principal" in out:
-        print("[+] Kerberos ticket found.")
-        print(out)
+    COOKIE = resp.getheader("Set-Cookie").split(";", 1)[0]
+    conn.close()
+    print("[+] Authenticated successfully.")
+
+
+def print_result(label, res):
+    print(f"\n=== {label} ===")
+    if "result" in res:
+        print(json.dumps(res["result"], indent=2))
     else:
-        print("[!] No Kerberos ticket detected. Run:")
-        print("    kinit username")
-        sys.exit(1)
-
-
-def enum_ipa_env():
-    print("\n[*] Enumerating IPA environment settings...")
-    out = run_cmd("ipa env")
-    print(out if out else "[!] Failed to get IPA environment.")
-
-
-def enum_users():
-    print("\n[*] Enumerating users...")
-    out = run_cmd("ipa user-find --all --raw")
-    print(out if out else "[!] Could not enumerate users.")
-
-
-def enum_groups():
-    print("\n[*] Enumerating groups...")
-    out = run_cmd("ipa group-find --all --raw")
-    print(out if out else "[!] Could not enumerate groups.")
-
-
-def enum_hosts():
-    print("\n[*] Enumerating hosts...")
-    out = run_cmd("ipa host-find --all --raw")
-    print(out if out else "[!] Could not enumerate hosts.")
-
-
-def enum_services():
-    print("\n[*] Enumerating services...")
-    out = run_cmd("ipa service-find --all --raw")
-    print(out if out else "[!] Could not enumerate services.")
-
-
-def enum_dns():
-    print("\n[*] Enumerating DNS zones...")
-    zones = run_cmd("ipa dnszone-find --all --raw")
-    if zones:
-        print(zones)
-        print("\n[*] Enumerating DNS records...")
-        zone_names = [
-            line.split(":")[1].strip()
-            for line in zones.splitlines()
-            if line.startswith("idnsname:")
-        ]
-        for z in zone_names:
-            print(f"\n=== DNS Zone: {z} ===")
-            recs = run_cmd(f"ipa dnsrecord-find {z} --all --raw")
-            print(recs if recs else "[!] No records returned.")
-    else:
-        print("[!] DNS enumeration unavailable.")
-
-
-def enum_ldap_raw():
-    print("\n[*] Attempting raw LDAP dump via ldapsearch (GSSAPI)...")
-    cmd = (
-        "ldapsearch -Y GSSAPI -b '' -s base '+' '*'"
-    )
-    out = run_cmd(cmd)
-    print(out if out else "[!] ldapsearch failed (no GSSAPI bind?).")
+        print(res)
 
 
 def main():
-    print(BANNER)
-    check_tools()
-    get_kcred_info()
+    if len(sys.argv) != 4:
+        print("Usage: freeipa_enum.py <ipa_host> <username> <password>")
+        sys.exit(1)
 
-    enum_ipa_env()
-    enum_users()
-    enum_groups()
-    enum_hosts()
-    enum_services()
-    enum_dns()
-    enum_ldap_raw()
+    host = sys.argv[1]
+    user = sys.argv[2]
+    password = sys.argv[3]
 
-    print("\n[+] Enumeration complete.\n")
+    print("[*] Logging in...")
+    login(host, user, password)
+
+    print("[*] Enumerating FreeIPA...")
+
+    print_result("Environment", request(host, "env"))
+    print_result("Users", request(host, "user_find", [[], {"all": True}]))
+    print_result("Groups", request(host, "group_find", [[], {"all": True}]))
+    print_result("Hosts", request(host, "host_find", [[], {"all": True}]))
+    print_result("Services", request(host, "service_find", [[], {"all": True}]))
+
+    # DNS enumeration if enabled
+    dnszones = request(host, "dnszone_find", [[], {"all": True}])
+    print_result("DNS Zones", dnszones)
+
+    if "result" in dnszones and "result" in dnszones["result"]:
+        zones = [z["idnsname"][0] for z in dnszones["result"]["result"] if "idnsname" in z]
+        for zone in zones:
+            print_result(f"DNS Records for {zone}",
+                         request(host, "dnsrecord_find", [[zone], {"all": True}]))
+
+    print("\n[+] Enumeration completed.")
+
 
 if __name__ == "__main__":
     main()
