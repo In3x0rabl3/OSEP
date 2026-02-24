@@ -12,6 +12,10 @@ COOKIE = None
 ###############################################################################
 
 def rpc(host, method, params=None):
+    """
+    Send JSON-RPC request to FreeIPA.
+    Always returns a dictionary, even on errors.
+    """
     global COOKIE
 
     headers = {
@@ -36,19 +40,25 @@ def rpc(host, method, params=None):
     if set_cookie:
         COOKIE = set_cookie.split(";", 1)[0]
 
-    data = res.read().decode()
-    conn.close()
+    try:
+        data = res.read().decode()
+        conn.close()
+    except:
+        conn.close()
+        return {"error": "failed_read"}
 
     try:
         return json.loads(data)
     except:
-        return {"error": "Invalid JSON", "raw": data}
+        return {"error": "invalid_json", "raw": data}
+
 
 ###############################################################################
 # LOGIN
 ###############################################################################
 
 def login(host, username, password):
+    """Password auth via FreeIPA login session."""
     global COOKIE
 
     ctx = ssl._create_unverified_context()
@@ -70,23 +80,61 @@ def login(host, username, password):
 
     COOKIE = res.getheader("Set-Cookie").split(";", 1)[0]
     conn.close()
-
     print("[+] Authenticated")
 
+
 ###############################################################################
-# ENUMERATION HELPERS
+# SAFE FIND (FIXED)
 ###############################################################################
 
 def safe_find(host, method):
+    """
+    Calls an IPA *_find method and ALWAYS returns a list.
+    Never crashes, even when:
+    - plugin is disabled
+    - API unsupported
+    - empty results
+    - "result" is null
+    - RPC returns an error block
+    """
     res = rpc(host, method, [[], {"all": True}])
+
+    if not isinstance(res, dict):
+        return []
+
+    if "error" in res:
+        return []
+
     if "result" not in res:
         return []
-    return res["result"].get("result", []) or []
+
+    if res["result"] is None:
+        return []
+
+    result_block = res["result"]
+    if not isinstance(result_block, dict):
+        return []
+
+    items = result_block.get("result", [])
+    if isinstance(items, list):
+        return items
+
+    return []
+
+
+###############################################################################
+# ENUMERATION
+###############################################################################
 
 def gather_data(host):
+    print("[*] Enumerating FreeIPA objects...")
+
     data = {}
 
-    data["env"] = rpc(host, "env").get("result", {})
+    # env usually always works
+    env = rpc(host, "env")
+    data["env"] = env.get("result", {})
+
     data["users"] = safe_find(host, "user_find")
     data["groups"] = safe_find(host, "group_find")
     data["roles"] = safe_find(host, "role_find")
@@ -98,14 +146,16 @@ def gather_data(host):
     data["dnszones"] = safe_find(host, "dnszone_find")
     data["pwpolicy"] = safe_find(host, "pwpolicy_find")
 
+    # DNS records per zone (ignore failures)
     for z in data["dnszones"]:
         if "idnsname" in z:
             zone = z["idnsname"][0]
             recs = rpc(host, "dnsrecord_find", [[zone], {"all": True}])
-            if "result" in recs:
+            if "result" in recs and recs["result"] and isinstance(recs["result"], dict):
                 z["records"] = recs["result"].get("result", [])
 
     return data
+
 
 ###############################################################################
 # FAST MODE FINDINGS
@@ -114,42 +164,43 @@ def gather_data(host):
 def fast_findings(data):
     findings = []
 
-    # Password policy analysis
+    # Weak password policies
     for pp in data.get("pwpolicy", []):
         maxlife = None
         minlength = None
 
-        if "krbmaxpwdlife" in pp and isinstance(pp["krbmaxpwdlife"], list) and pp["krbmaxpwdlife"]:
+        if "krbmaxpwdlife" in pp and isinstance(pp["krbmaxpwdlife"], list):
             try:
                 maxlife = int(pp["krbmaxpwdlife"][0])
             except:
                 pass
 
-        if "krbpwdminlength" in pp and isinstance(pp["krbpwdminlength"], list) and pp["krbpwdminlength"]:
+        if "krbpwdminlength" in pp and isinstance(pp["krbpwdminlength"], list):
             try:
                 minlength = int(pp["krbpwdminlength"][0])
             except:
                 pass
 
-        if maxlife is not None and maxlife > 30:
+        if maxlife and maxlife > 30:
             findings.append("[!] Weak password policy: password lifetime > 30 days")
 
-        if minlength is not None and minlength < 10:
-            findings.append("[!] Password minimum length < 10")
+        if minlength and minlength < 10:
+            findings.append("[!] Weak password policy: minimum length < 10")
 
-    # Users without 2FA
+    # Users with no 2FA
     for u in data["users"]:
-        username = u.get("uid", ["?"])[0]
+        uname = u.get("uid", ["?"])[0]
         if "ipauserauthtype" not in u:
-            findings.append(f"[!] User {username} has no 2FA configured")
+            findings.append(f"[!] User {uname} has no 2FA configured")
 
     # HBAC too broad
     for h in data["hbacrules"]:
-        hname = h.get("cn", ["?"])[0]
+        name = h.get("cn", ["?"])[0]
+        # If no user restriction + no service restriction
         if "memberuser_user" not in h and "hbacsvc" not in h:
-            findings.append(f"[!] HBAC rule '{hname}' may allow broad access")
+            findings.append(f"[!] HBAC '{name}' may allow broad access")
 
-    # Sudo rules allowing full root access
+    # SUDO ANYCMD
     for s in data["sudorules"]:
         sname = s.get("cn", ["?"])[0]
         cmds = s.get("sudoallowcommand", [])
@@ -162,15 +213,18 @@ def fast_findings(data):
         for rec in z.get("records", []):
             rname = rec.get("idnsname", ["?"])[0]
             if rname == "*" or rname.lower() == "wildcard":
-                findings.append(f"[!] Wildcard DNS record in zone {zname}")
+                findings.append(f"[!] Wildcard DNS entry detected in zone '{zname}'")
 
     return findings
+
 
 ###############################################################################
 # DEEP ATTACK PATH ENGINE
 ###############################################################################
 
 def deep_attack_paths(data):
+    """BloodHound-style multi-hop privilege path detection."""
+
     def get_name(obj, key="cn", alt="uid"):
         if key in obj:
             return obj[key][0]
@@ -178,55 +232,48 @@ def deep_attack_paths(data):
             return obj[alt][0]
         return "?"
 
+    # Build name maps
     users = {get_name(u, "uid"): u for u in data["users"]}
-    groups = {get_name(g): g for g in data["groups"]}
     roles = {get_name(r): r for r in data["roles"]}
     privileges = {get_name(p): p for p in data["privileges"]}
     permissions = {get_name(p): p for p in data["permissions"]}
 
     edges = []
 
-    # User → Groups
+    # User → Group
     for uname, u in users.items():
         for g in u.get("memberof_group", []):
             edges.append((uname, "member_of_group", g))
 
-    # Groups → Roles
+    # Group → Role
     for rname, r in roles.items():
         for g in r.get("member_group", []):
             edges.append((g, "grants_role", rname))
 
-    # Roles → Privileges
+    # Role → Privilege
     for pname, p in privileges.items():
         for r in p.get("memberof_role", []):
             edges.append((r, "grants_privilege", pname))
 
-    # Privileges → Permissions
+    # Privilege → Permission
     for permname, perm in permissions.items():
         for p in perm.get("memberof_privilege", []):
             edges.append((p, "grants_permission", permname))
 
-    # Permissions → High-impact capabilities
+    # Permission → Capabilities
     for permname, perm in permissions.items():
         rights = perm.get("ipapermright", [])
-        loc = perm.get("ipapermlocation", [])
+        locs = perm.get("ipapermlocation", [])
 
-        # Host modification = lateral movement
         if "write" in rights:
-            if any("host" in l for l in loc):
-                edges.append((permname, "can_modify_hosts", "HOST_ACCESS"))
+            if any("host" in l for l in locs):
+                edges.append((permname, "can_modify_hosts", "HOST_WRITE"))
 
-        # HBAC modification = login expansion
-        if any("hbac" in l for l in loc):
+        if any("hbac" in l for l in locs):
             edges.append((permname, "modify_hbac", "HBAC_RULES"))
 
-        # Sudo modification = privilege escalation
-        if any("sudo" in l for l in loc):
+        if any("sudo" in l for l in locs):
             edges.append((permname, "modify_sudo", "SUDO_RULES"))
-
-    ###########################################################################
-    # DFS PATH SEARCH
-    ###########################################################################
 
     TARGETS = ["can_modify_hosts", "modify_hbac", "modify_sudo"]
 
@@ -238,25 +285,25 @@ def deep_attack_paths(data):
 
         visited.add(start)
 
-        for (src, rel, dst) in edges:
+        for src, rel, dst in edges:
             if src != start:
                 continue
 
             new_path = path + [(src, rel, dst)]
 
-            if rel in TARGETS or (isinstance(dst, str) and dst in ["HOST_ACCESS", "HBAC_RULES", "SUDO_RULES"]):
+            if rel in TARGETS:
                 yield new_path
 
             if dst not in visited:
                 yield from dfs(dst, visited, new_path)
 
     attack_paths = []
-
     for user in users:
         for p in dfs(user):
             attack_paths.append(p)
 
     return attack_paths
+
 
 ###############################################################################
 # MAIN
@@ -280,7 +327,7 @@ def main():
         print("\n=== FAST MODE FINDINGS ===\n")
         f = fast_findings(data)
         if not f:
-            print("No simple misconfigurations found.")
+            print("No immediate misconfigurations found.")
             return
         for x in f:
             print(x)
@@ -294,11 +341,12 @@ def main():
 
         for p in paths:
             print("\n[ATTACK PATH]")
-            for (src, rel, dst) in p:
+            for src, rel, dst in p:
                 print(f"  {src} --{rel}--> {dst}")
 
     else:
         print("Invalid mode. Use fast or deep.")
+
 
 if __name__ == "__main__":
     main()
