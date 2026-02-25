@@ -9,7 +9,7 @@ COOKIE = None
 
 
 def ipa_login(host, user, password):
-    """Authenticate to FreeIPA and store session cookie."""
+    """Login to FreeIPA and capture cookie."""
     global COOKIE
     ctx = ssl._create_unverified_context()
 
@@ -27,6 +27,7 @@ def ipa_login(host, user, password):
         print("[!] Login failed.")
         sys.exit(1)
 
+    # Store session cookie
     COOKIE = resp.getheader("Set-Cookie").split(";", 1)[0]
     conn.close()
 
@@ -34,7 +35,7 @@ def ipa_login(host, user, password):
 
 
 def ipa_rpc(host, method, params=None):
-    """Perform JSON-RPC call to FreeIPA."""
+    """Perform a JSON-RPC request to FreeIPA."""
     global COOKIE
     ctx = ssl._create_unverified_context()
 
@@ -48,7 +49,7 @@ def ipa_rpc(host, method, params=None):
 
     payload = json.dumps({
         "method": method,
-        "params": params or [[], {"all": True}]
+        "params": params or [[], {"all": True}],
     })
 
     conn = http.client.HTTPSConnection(host, context=ctx)
@@ -58,10 +59,11 @@ def ipa_rpc(host, method, params=None):
     raw = resp.read().decode()
     conn.close()
 
+    # Try parsing JSON
     try:
         return json.loads(raw)
     except:
-        print("[!] Server returned non-JSON:")
+        print("[!] Invalid JSON returned by server:")
         print(raw)
         return None
 
@@ -77,24 +79,34 @@ def main():
 
     ipa_login(host, user, password)
 
-    print("[*] Looking up group 'pentest_hosts'...")
+    print("[*] Querying hosts in group 'pentest_hosts'...")
 
-    # Query all hosts in this group
+    # Search for hosts in the group
     params = [[], {"in_group": "pentest_hosts", "all": True}]
     result = ipa_rpc(host, "host_find", params)
 
     if not result or "result" not in result:
-        print("[!] No results returned.")
+        print("[!] FreeIPA returned no usable data.")
         sys.exit(1)
 
-    hosts = result["result"]["result"]
-    print(f"[+] Found {len(hosts)} hosts in group 'pentest_hosts'")
+    # FIX: handle None or missing fields
+    hosts = result.get("result", {}).get("result") or []
 
-    for h in hosts:
-        fqdn = h.get("fqdn", ["UNKNOWN"])[0]
-        principals = h.get("krbprincipalname", [])
+    print(f"[+] Found {len(hosts)} host machine accounts in 'pentest_hosts'")
+
+    if not hosts:
+        print("[!] No hosts found. Group may be empty or not exist.")
+        sys.exit(0)
+
+    # Print details of each host
+    for entry in hosts:
+        fqdn = entry.get("fqdn", ["UNKNOWN"])[0]
+        principals = entry.get("krbprincipalname", [])
+        mac = entry.get("macaddress", ["N/A"])
+
         print(f"\nHost: {fqdn}")
         print(f"  Principals: {principals}")
+        print(f"  MAC Addresses: {mac}")
 
     print("\n[+] Done.")
 
