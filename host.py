@@ -8,7 +8,6 @@ IPA = "/ipa/session/json"
 COOKIE = None
 
 def ipa_login(host, user, password):
-    """Login to FreeIPA and capture cookie."""
     global COOKIE
     ctx = ssl._create_unverified_context()
     conn = http.client.HTTPSConnection(host, context=ctx)
@@ -20,19 +19,18 @@ def ipa_login(host, user, password):
 
     body = f"user={user}&password={password}"
     conn.request("POST", "/ipa/session/login_password", body, headers)
-
     resp = conn.getresponse()
+
     if resp.status != 200:
         print("[!] Login failed")
         sys.exit(1)
 
-    COOKIE = resp.getheader("Set-Cookie").split(";",1)[0]
+    COOKIE = resp.getheader("Set-Cookie").split(";", 1)[0]
     conn.close()
-    print("[+] Logged in successfully")
+    print("[+] Logged in")
 
 
 def ipa_rpc(host, method, params):
-    """Safely call FreeIPA JSON-RPC."""
     global COOKIE
     ctx = ssl._create_unverified_context()
     conn = http.client.HTTPSConnection(host, context=ctx)
@@ -41,6 +39,7 @@ def ipa_rpc(host, method, params):
         "Content-Type": "application/json",
         "Referer": f"https://{host}/ipa"
     }
+
     if COOKIE:
         headers["Cookie"] = COOKIE
 
@@ -52,11 +51,18 @@ def ipa_rpc(host, method, params):
     conn.close()
 
     try:
-        return json.loads(raw)
+        data = json.loads(raw)
     except:
         print("[!] Non-JSON response:")
         print(raw)
         return None
+
+    if "error" in data and data["error"]:
+        print("[!] IPA Error:")
+        print(json.dumps(data["error"], indent=2))
+        return None
+
+    return data
 
 
 def main():
@@ -67,45 +73,44 @@ def main():
     host, user, password = sys.argv[1], sys.argv[2], sys.argv[3]
     ipa_login(host, user, password)
 
-    print("[*] Searching for groups matching 'pentest*' ...")
+    print("[*] Searching for groups containing 'pentest' ...")
 
-    # Find all groups starting with pentest*
-    params = [["pentest*"], {"all": True}]
-    group_result = ipa_rpc(host, "group_find", params)
+    # REAL FreeIPA search (no wildcard)
+    params = [["pentest"], {"all": True}]
+    result = ipa_rpc(host, "group_find", params)
 
-    if not group_result or "result" not in group_result:
-        print("[!] No response from server")
+    if not result or "result" not in result:
+        print("[!] IPA returned no data")
         sys.exit(1)
 
-    groups = group_result["result"].get("result") or []
+    groups = result["result"].get("result") or []
 
-    print(f"[+] Found {len(groups)} matching groups\n")
+    print(f"[+] Found {len(groups)} groups containing 'pentest'")
 
     if not groups:
-        print("[!] No groups named pentest*")
+        print("[!] No results; verify groups exist")
         sys.exit(0)
 
-    # Print EVERYTHING inside each group
+    # Print full contents
     for g in groups:
         name = g.get("cn", ["UNKNOWN"])[0]
-        print("\n========================================")
+        print("\n=======================================")
         print(f"GROUP: {name}")
-        print("========================================")
+        print("=======================================")
 
         print(json.dumps(g, indent=2))
 
-        # Expand: Print members cleanly
-        print("\n--- Members ---")
-        print("Users:        ", g.get("member_user", []))
-        print("Groups:       ", g.get("member_group", []))
-        print("Hosts:        ", g.get("member_host", []))
-        print("Host Groups:  ", g.get("member_hostgroup", []))
-        print("Services:     ", g.get("member_service", []))
-        print("Netgroups:    ", g.get("member_netgroup", []))
-        print("Indirect:     ", g.get("memberofindirect", []))
-
+        print("\n--- CLEAN MEMBERS ---")
+        print("Users:",        g.get("member_user", []))
+        print("Hosts:",        g.get("member_host", []))
+        print("Groups:",       g.get("member_group", []))
+        print("Hostgroups:",   g.get("member_hostgroup", []))
+        print("Services:",     g.get("member_service", []))
+        print("Netgroups:",    g.get("member_netgroup", []))
+        print("Indirect:",     g.get("memberofindirect", []))
 
     print("\n[+] Done.")
+
 
 if __name__ == "__main__":
     main()
